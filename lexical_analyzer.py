@@ -18,11 +18,10 @@ zp_keywords = { 'at', 'as', 'and',
 token_decimal  = r'[+-]?' + r'\d+' + r'(.\d*)?'             # [Sign]  [Integer]  [Fraction]
 token_identifier = r'[_a-zA-Z]+[_a-zA-Z0-9]*'               # [_ or latter] [any vaild char]
 
-token_operator = "|".join([ r'(->|<-)',                     # Dirrecting
-                            r'=|+=|-=|%=|/=|\*=',           # Assign
-                            r'<=|>=|==|!=|<|>',             # Comparession
-                            r'+|-|\*|/|%'                   # Math
-                          ])
+token_assign_operator       = r'=|/=|%=|\*=|\+=|-='         # Assign
+token_comparession_operator = r'<=|>=|==|!=|<|>'            # Comparession
+token_math_operator         = r'\+|-|\*|/|%|\^'             # Math
+
 
 token_special_operators = r'[:,!]'
 
@@ -34,10 +33,12 @@ class LaxicalAnalyzer:
     def __init__(self,):
         # the current tokens that our laxical match
         tokens_dict = {
-            "Identifier"    : token_identifier,
-            "Decimal"       : token_decimal,
-            "Operator"      : token_operator,
-            "Special Opt"   : token_special_operators,
+            "Identifier"        : token_identifier,
+            "Decimal"           : token_decimal,
+            "Assign Operator"   : token_assign_operator,
+            "Cmp Operator"      : token_comparession_operator,
+            "Math Operator"     : token_math_operator,
+            "Special Opt"       : token_special_operators,
         }
 
         # compile the tokens to be used later
