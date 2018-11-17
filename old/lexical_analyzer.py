@@ -43,16 +43,18 @@ class LaxicalAnalyzer:
 
         # compile the tokens to be used later
         self._tokens = [(k, re.compile(tokens_dict[k])) for k in tokens_dict]
+        self._string = ''
+
+    def source_code(self, string):
+        self._string = string.split()
 
     def analyze(self, string):
-        string = string.split()
-
-        for word in string:
+        for word in self._string:
             matched = False
 
             # first we check that the word is a keyword token
             if word in zp_keywords:
-                print("%s\t\t Type: %s" % (word, "Keyword"))
+                print("%s\t\t Type: %s" % )
                 continue
 
             # try to match the current word with every complied token we have
