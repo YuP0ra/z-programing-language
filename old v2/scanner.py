@@ -4,13 +4,15 @@ class Scanner:
     def __init__(self,):
         tokens = [
             # Identifiers
-            'TYPE', 'ID',
+            'TYPE_INT', 'TYPE_STRING', 'TYPE_BOOL', 'ID',
             # Primitive data types
             'INTEGER', 'STRING', 'BOOL',
             # Literals
              "LPAREN", "RPAREN", "LBRACE", "RBRACE", "COLON", "COMMA", "DOT", "SEMICOLON",
             # Operators
              "PLUS", "MINUS", "MULTIPLY", "DIVIDE", "MOD", "ASSIGN", "EQUAL", "NOTEQUAL",
+             # Errors
+             "UNKOWN"
              ]
 
         tokens_patterns = {
@@ -46,7 +48,7 @@ class Scanner:
 
         # compile the tokens to be used later
         self._tokens = [(k, re.compile(tokens_patterns[k])) for k in tokens_patterns]
-        self._string = ''
+        self._source_code = ''
 
     def set_source_code(self, string):
         # process the sourcecode and remove the Comments
