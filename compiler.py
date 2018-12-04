@@ -7,10 +7,19 @@ reserved_types = {
         'float'     :'TYPE_FLOAT',
         'string'    :'TYPE_STRING',
 
+        'def'       :'R_DEF',
 
         'if'        :'R_IF',
         'for'       :'R_FOR',
         'while'     :'R_WHILE',
+
+        'and'       :'R_AND',
+        'not'       :'R_NOT',
+        'or'        :'R_OR',
+
+        'true'      :'BOOL',
+        'false'     :'BOOL',
+
     }
 
 tokens = [
@@ -28,15 +37,10 @@ tokens = [
 t_FLOAT        = r'[+-]?' + r'\d+.\d+'
 t_INTEGER      = r'[+-]?' + r'\d+'
 t_STRING       = r'".*"'
-t_BOOL         = r'(true)|(false)'
 t_LPAREN       = r'\('
 t_RPAREN       = r'\)'
-t_LBRACE       = r'\{'
-t_RBRACE       = r'\}'
 t_COLON        = r'\:'
 t_COMMA        = r'\,'
-t_DOT          = r'\.'
-t_SEMICOLON    = r'\;'
 t_MULTIPLY     = r'\*'
 t_DIVIDE       = r'\/'
 t_PLUS         = r'\+'
@@ -64,70 +68,90 @@ def t_error(t):
 # Build the lexer
 lexer = lex.lex()
 
-
 var_table = {}
 
-# Parsing rules
-def p_validline(t):
+precedence = (
+    ('left', 'PLUS', 'MINUS'),
+    ('left', 'MULTIPLY', 'DIVIDE'),
+)
+
+
+def p_sourcecode(t):
     '''
-    validline   : assignment
-                | statement
+    sourcecode  : NEWLINE
+                | assignment
+                | declaration
+                | decision
                 | loop
-                | NEWLINE
+                |
+
+
+
+    assignment  : ID ASSIGN idexpr
+                | ID
+
+    idexpr      : value  mathopt  idexpr
+                | value
+
+    value       : ID
+                | BOOL
+                | STRING
+                | expression
+
+
+
+    declaration : R_DEF  ID  LPAREN  args  RPAREN  COLON
+
+    args        : ID  COMMA  args
+                | ID
+                |
+
+
+
+    expression  : LPAREN  expression  RPAREN
+                | num  mathopt  expression
+                | num
+
+    num         : INTEGER
+                | FLOAT
+
+    mathopt     : PLUS
+                | MINUS
+                | MULTIPLY
+                | DIVIDE
+                | MOD
+
+
+
+    decision    : R_IF  condition  COLON
+
+    loop        : R_WHILE  condition  COLON
+
+    condition   : BOOL
+                | ID  condopt  value
+                | LPAREN  condition  RPAREN
+                | condition  condexpend  condition
+
+    condopt     : EQUAL
+                | NOTEQUAL
+
+    condexpend  : R_AND
+                | R_NOT
+                | R_OR
+
+
+
+
     '''
 
-def p_statement(t):
-    '''
-    statement   : ID  ASSIGN  ID
-                | ID  ASSIGN  BOOL
-                | ID  ASSIGN  FLOAT
-                | ID  ASSIGN  STRING
-                | ID  ASSIGN  INTEGER
-    '''
-    if t[1] in var_table:
-        if var_table[t[1]] != t[3]:
-            print("Syntax error: cant assigen %s to %s" % (t[3], var_table[t[1]]))
-
-    else:
-        print("Syntax error: %s must be declared before assigned value" % t[1])
-
-def p_assignment(t):
-    '''
-    assignment  : TYPE_INT      ID  ASSIGN  INTEGER
-
-                | TYPE_FLOAT    ID  ASSIGN  FLOAT
-                | TYPE_FLOAT    ID  ASSIGN  INTEGER
-
-                | TYPE_STRING   ID  ASSIGN  STRING
-    '''
-    var_table[t[2]] = t[1]
-    print(type(t[1]))
-
-def p_loop(t):
-    '''
-    loop        : R_IF      condition   COLON
-                | R_WHILE   condition   COLON
-    '''
-
-def p_condition(t):
-    '''
-    condition       : ID    condition_op    value
-                    | BOOL
-
-    condition_op    : EQUAL
-                    | NOTEQUAL
-
-    value           : ID
-                    | INTEGER
-                    | FLOAT
-                    | STRING
-                    | BOOL
-    '''
 
 def p_error(t):
-    print("Syntax error at the word: %s" % t.value)
+    if t:
+        print("Syntax error at the word: %s" % t.value)
+    else:
+        print("Syntax error .. God only knows where or why!")
 
 parser = yacc.yacc()
 
 while True:
-    parser.parse(input())
+    parser.parse(input(">>>"))
