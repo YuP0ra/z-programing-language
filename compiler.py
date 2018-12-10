@@ -2,11 +2,6 @@ import ply.lex as lex
 import ply.yacc as yacc
 
 reserved_types = {
-        'int'       :'TYPE_INT',
-        'bool'      :'TYPE_BOOL',
-        'float'     :'TYPE_FLOAT',
-        'string'    :'TYPE_STRING',
-
         'def'       :'R_DEF',
 
         'if'        :'R_IF',
@@ -20,15 +15,17 @@ reserved_types = {
         'true'      :'BOOL',
         'false'     :'BOOL',
 
+        'return'    :'R_RETURN',
+
     }
 
 tokens = [
     # Identifiers
     'ID',
     # Primitive data types
-    'INTEGER', 'FLOAT', 'STRING', 'BOOL',
+    'INTEGER', 'FLOAT', 'STRING',
     # Literals
-     "LPAREN", "RPAREN", "LBRACE", "RBRACE", "COLON", "COMMA", "DOT", "SEMICOLON", "NEWLINE",
+     "LPAREN", "RPAREN", "COLON", "COMMA", "NEWLINE",
     # Operators
      "PLUS", "MINUS", "MULTIPLY", "DIVIDE", "MOD", "ASSIGN", "EQUAL", "NOTEQUAL",
      ] + list(reserved_types.values())
@@ -61,6 +58,10 @@ def t_ID(t):
 
     return t
 
+def t_newline(t):
+    r'\n+'
+    t.lexer.lineno += len(t.value)
+
 def t_error(t):
     print("Lexical error at the word: %s" % t.value[0])
     quit()
@@ -76,14 +77,18 @@ precedence = (
 )
 
 
-def p_sourcecode(t):
+def p_cool(t):
     '''
+    program     : sourcecode program
+                |
+
     sourcecode  : NEWLINE
                 | assignment
                 | declaration
+                | methodcall
+                | returnfunc
                 | decision
                 | loop
-                |
 
 
 
@@ -97,6 +102,7 @@ def p_sourcecode(t):
                 | BOOL
                 | STRING
                 | expression
+                | methodcall
 
 
 
@@ -105,6 +111,19 @@ def p_sourcecode(t):
     args        : ID  COMMA  args
                 | ID
                 |
+
+
+
+    methodcall  : ID  LPAREN  callargs  RPAREN
+
+    callargs    : value  COMMA  callargs
+                | value
+                |
+
+
+
+    returnfunc  : R_RETURN
+                | R_RETURN value
 
 
 
@@ -140,18 +159,35 @@ def p_sourcecode(t):
                 | R_OR
 
 
-
-
     '''
 
 
 def p_error(t):
     if t:
-        print("Syntax error at the word: %s" % t.value)
+        print("Syntax error at the word: %s" % t)
     else:
         print("Syntax error .. God only knows where or why!")
 
 parser = yacc.yacc()
 
-while True:
-    parser.parse(input(">>>"))
+cd = """
+x = 5
+y = x + 17.3
+
+soso = "text"
+
+def p(t):
+    if x != y:
+        return "Syntax error at the word"
+
+    if t == false:
+        print("Syntax error .. God only knows where or why!")
+
+    return
+"""
+
+parser.parse(cd)
+print("\nFinished.")
+
+# while True:
+#     parser.parse(input(">>>"))
