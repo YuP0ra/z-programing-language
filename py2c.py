@@ -16,6 +16,7 @@ reserved_types = {
         'false'     :'BOOL',
 
         'return'    :'R_RETURN',
+
     }
 
 tokens = [
@@ -68,94 +69,44 @@ def t_error(t):
 # Build the lexer
 lexer = lex.lex()
 
+var_table = {}
 
 precedence = (
     ('left', 'PLUS', 'MINUS'),
     ('left', 'MULTIPLY', 'DIVIDE'),
 )
 
-
-def p_z(t):
+res = []
+def p_s0(t):
     '''
     program     : sourcecode program
                 |
-
-    sourcecode  : NEWLINE
-                | assignment
-                | declaration
-                | methodcall
-                | returnfunc
-                | decision
-                | loop
-
-
-    assignment  : ID ASSIGN idexpr
-                | ID
-
-    idexpr      : value  mathopt  idexpr
-                | value
-
-    value       : ID
-                | BOOL
-                | STRING
-                | expression
-                | methodcall
-
-
-
-    declaration : R_DEF  ID  LPAREN  args  RPAREN  COLON
-
-    args        : ID  COMMA  args
-                | ID
-                |
-
-
-
-    methodcall  : ID  LPAREN  callargs  RPAREN
-
-    callargs    : value  COMMA  callargs
-                | value
-                |
-
-
-
-    returnfunc  : R_RETURN
-                | R_RETURN value
-
-
-
-    expression  : LPAREN  expression  RPAREN
-                | num  mathopt  expression
-                | num
-
-    num         : INTEGER
-                | FLOAT
-
-    mathopt     : PLUS
-                | MINUS
-                | MULTIPLY
-                | DIVIDE
-                | MOD
-
-
-
-    decision    : R_IF  condition  COLON
-
-    loop        : R_WHILE  condition  COLON
-
-    condition   : BOOL
-                | ID  condopt  value
-                | LPAREN  condition  RPAREN
-                | condition  condexpend  condition
-
-    condopt     : EQUAL
-                | NOTEQUAL
-
-    condexpend  : R_AND
-                | R_NOT
-                | R_OR
     '''
 
+def p_s00(t):
+    '''
+    sourcecode  : NEWLINE
+                | assignment
+    '''
+    res.append(t[1])
+
+def p_s01(t):
+    '''
+    assignment  : ID ASSIGN INTEGER
+    '''
+    t[0] = "int %s = %s; \n" % (t[1], t[3])
+
+def p_s02(t):
+    '''
+    assignment  : ID ASSIGN FLOAT
+    '''
+    t[0] = "float %s = %sf; \n" % (t[1], t[3])
+
+def p_s03(t):
+    '''
+    assignment  : ID ASSIGN STRING
+    '''
+    t[0] = "string %s = %s; \n" % (t[1], t[3])
 
 
 def p_error(t):
@@ -166,24 +117,14 @@ def p_error(t):
 
 parser = yacc.yacc()
 
-
-source_code = """
+cd = """
 x = 5
-y = "string" + 17.3
-
-soso = "text"
-
-def p(t):
-    if x == y:
-        return "Syntax error at the word"
-
-    if t == false:
-        print("Syntax error .. God only knows where or why!")
-
-    return
+y = 17.3
+z = "holly shit"
 """
 
-# parser.parse(source_code)
+parser.parse(cd)
+print("".join(res))
 
-while True:
-    parser.parse(input(">>> "))
+# while True:
+#     parser.parse(input(">>>"))
