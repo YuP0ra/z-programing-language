@@ -1,0 +1,434 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    R_DEF
+
+Grammar
+
+Rule 0     S' -> sourcecode
+Rule 1     sourcecode -> NEWLINE
+Rule 2     sourcecode -> varcall
+Rule 3     sourcecode -> assignment
+Rule 4     sourcecode -> <empty>
+Rule 5     assignment -> ID ASSIGN expression
+Rule 6     varcall -> ID
+Rule 7     expression -> LPAREN expression RPAREN
+Rule 8     expression -> expression MOD expression
+Rule 9     expression -> expression PLUS expression
+Rule 10    expression -> expression MINUS expression
+Rule 11    expression -> expression DIVIDE expression
+Rule 12    expression -> expression MULTIPLY expression
+Rule 13    expression -> NUM
+Rule 14    expression -> ID
+
+Terminals, with rules where they appear
+
+ASSIGN               : 5
+DIVIDE               : 11
+ID                   : 5 6 14
+LPAREN               : 7
+MINUS                : 10
+MOD                  : 8
+MULTIPLY             : 12
+NEWLINE              : 1
+NUM                  : 13
+PLUS                 : 9
+RPAREN               : 7
+R_DEF                : 
+error                : 
+
+Nonterminals, with rules where they appear
+
+assignment           : 3
+expression           : 5 7 8 8 9 9 10 10 11 11 12 12
+sourcecode           : 0
+varcall              : 2
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . sourcecode
+    (1) sourcecode -> . NEWLINE
+    (2) sourcecode -> . varcall
+    (3) sourcecode -> . assignment
+    (4) sourcecode -> .
+    (6) varcall -> . ID
+    (5) assignment -> . ID ASSIGN expression
+
+    NEWLINE         shift and go to state 2
+    $end            reduce using rule 4 (sourcecode -> .)
+    ID              shift and go to state 5
+
+    sourcecode                     shift and go to state 1
+    varcall                        shift and go to state 3
+    assignment                     shift and go to state 4
+
+state 1
+
+    (0) S' -> sourcecode .
+
+
+
+state 2
+
+    (1) sourcecode -> NEWLINE .
+
+    $end            reduce using rule 1 (sourcecode -> NEWLINE .)
+
+
+state 3
+
+    (2) sourcecode -> varcall .
+
+    $end            reduce using rule 2 (sourcecode -> varcall .)
+
+
+state 4
+
+    (3) sourcecode -> assignment .
+
+    $end            reduce using rule 3 (sourcecode -> assignment .)
+
+
+state 5
+
+    (6) varcall -> ID .
+    (5) assignment -> ID . ASSIGN expression
+
+    $end            reduce using rule 6 (varcall -> ID .)
+    ASSIGN          shift and go to state 6
+
+
+state 6
+
+    (5) assignment -> ID ASSIGN . expression
+    (7) expression -> . LPAREN expression RPAREN
+    (8) expression -> . expression MOD expression
+    (9) expression -> . expression PLUS expression
+    (10) expression -> . expression MINUS expression
+    (11) expression -> . expression DIVIDE expression
+    (12) expression -> . expression MULTIPLY expression
+    (13) expression -> . NUM
+    (14) expression -> . ID
+
+    LPAREN          shift and go to state 9
+    NUM             shift and go to state 10
+    ID              shift and go to state 7
+
+    expression                     shift and go to state 8
+
+state 7
+
+    (14) expression -> ID .
+
+    MOD             reduce using rule 14 (expression -> ID .)
+    PLUS            reduce using rule 14 (expression -> ID .)
+    MINUS           reduce using rule 14 (expression -> ID .)
+    DIVIDE          reduce using rule 14 (expression -> ID .)
+    MULTIPLY        reduce using rule 14 (expression -> ID .)
+    $end            reduce using rule 14 (expression -> ID .)
+    RPAREN          reduce using rule 14 (expression -> ID .)
+
+
+state 8
+
+    (5) assignment -> ID ASSIGN expression .
+    (8) expression -> expression . MOD expression
+    (9) expression -> expression . PLUS expression
+    (10) expression -> expression . MINUS expression
+    (11) expression -> expression . DIVIDE expression
+    (12) expression -> expression . MULTIPLY expression
+
+    $end            reduce using rule 5 (assignment -> ID ASSIGN expression .)
+    MOD             shift and go to state 11
+    PLUS            shift and go to state 12
+    MINUS           shift and go to state 13
+    DIVIDE          shift and go to state 14
+    MULTIPLY        shift and go to state 15
+
+
+state 9
+
+    (7) expression -> LPAREN . expression RPAREN
+    (7) expression -> . LPAREN expression RPAREN
+    (8) expression -> . expression MOD expression
+    (9) expression -> . expression PLUS expression
+    (10) expression -> . expression MINUS expression
+    (11) expression -> . expression DIVIDE expression
+    (12) expression -> . expression MULTIPLY expression
+    (13) expression -> . NUM
+    (14) expression -> . ID
+
+    LPAREN          shift and go to state 9
+    NUM             shift and go to state 10
+    ID              shift and go to state 7
+
+    expression                     shift and go to state 16
+
+state 10
+
+    (13) expression -> NUM .
+
+    MOD             reduce using rule 13 (expression -> NUM .)
+    PLUS            reduce using rule 13 (expression -> NUM .)
+    MINUS           reduce using rule 13 (expression -> NUM .)
+    DIVIDE          reduce using rule 13 (expression -> NUM .)
+    MULTIPLY        reduce using rule 13 (expression -> NUM .)
+    $end            reduce using rule 13 (expression -> NUM .)
+    RPAREN          reduce using rule 13 (expression -> NUM .)
+
+
+state 11
+
+    (8) expression -> expression MOD . expression
+    (7) expression -> . LPAREN expression RPAREN
+    (8) expression -> . expression MOD expression
+    (9) expression -> . expression PLUS expression
+    (10) expression -> . expression MINUS expression
+    (11) expression -> . expression DIVIDE expression
+    (12) expression -> . expression MULTIPLY expression
+    (13) expression -> . NUM
+    (14) expression -> . ID
+
+    LPAREN          shift and go to state 9
+    NUM             shift and go to state 10
+    ID              shift and go to state 7
+
+    expression                     shift and go to state 17
+
+state 12
+
+    (9) expression -> expression PLUS . expression
+    (7) expression -> . LPAREN expression RPAREN
+    (8) expression -> . expression MOD expression
+    (9) expression -> . expression PLUS expression
+    (10) expression -> . expression MINUS expression
+    (11) expression -> . expression DIVIDE expression
+    (12) expression -> . expression MULTIPLY expression
+    (13) expression -> . NUM
+    (14) expression -> . ID
+
+    LPAREN          shift and go to state 9
+    NUM             shift and go to state 10
+    ID              shift and go to state 7
+
+    expression                     shift and go to state 18
+
+state 13
+
+    (10) expression -> expression MINUS . expression
+    (7) expression -> . LPAREN expression RPAREN
+    (8) expression -> . expression MOD expression
+    (9) expression -> . expression PLUS expression
+    (10) expression -> . expression MINUS expression
+    (11) expression -> . expression DIVIDE expression
+    (12) expression -> . expression MULTIPLY expression
+    (13) expression -> . NUM
+    (14) expression -> . ID
+
+    LPAREN          shift and go to state 9
+    NUM             shift and go to state 10
+    ID              shift and go to state 7
+
+    expression                     shift and go to state 19
+
+state 14
+
+    (11) expression -> expression DIVIDE . expression
+    (7) expression -> . LPAREN expression RPAREN
+    (8) expression -> . expression MOD expression
+    (9) expression -> . expression PLUS expression
+    (10) expression -> . expression MINUS expression
+    (11) expression -> . expression DIVIDE expression
+    (12) expression -> . expression MULTIPLY expression
+    (13) expression -> . NUM
+    (14) expression -> . ID
+
+    LPAREN          shift and go to state 9
+    NUM             shift and go to state 10
+    ID              shift and go to state 7
+
+    expression                     shift and go to state 20
+
+state 15
+
+    (12) expression -> expression MULTIPLY . expression
+    (7) expression -> . LPAREN expression RPAREN
+    (8) expression -> . expression MOD expression
+    (9) expression -> . expression PLUS expression
+    (10) expression -> . expression MINUS expression
+    (11) expression -> . expression DIVIDE expression
+    (12) expression -> . expression MULTIPLY expression
+    (13) expression -> . NUM
+    (14) expression -> . ID
+
+    LPAREN          shift and go to state 9
+    NUM             shift and go to state 10
+    ID              shift and go to state 7
+
+    expression                     shift and go to state 21
+
+state 16
+
+    (7) expression -> LPAREN expression . RPAREN
+    (8) expression -> expression . MOD expression
+    (9) expression -> expression . PLUS expression
+    (10) expression -> expression . MINUS expression
+    (11) expression -> expression . DIVIDE expression
+    (12) expression -> expression . MULTIPLY expression
+
+    RPAREN          shift and go to state 22
+    MOD             shift and go to state 11
+    PLUS            shift and go to state 12
+    MINUS           shift and go to state 13
+    DIVIDE          shift and go to state 14
+    MULTIPLY        shift and go to state 15
+
+
+state 17
+
+    (8) expression -> expression MOD expression .
+    (8) expression -> expression . MOD expression
+    (9) expression -> expression . PLUS expression
+    (10) expression -> expression . MINUS expression
+    (11) expression -> expression . DIVIDE expression
+    (12) expression -> expression . MULTIPLY expression
+
+  ! shift/reduce conflict for MOD resolved as shift
+  ! shift/reduce conflict for PLUS resolved as shift
+  ! shift/reduce conflict for MINUS resolved as shift
+  ! shift/reduce conflict for DIVIDE resolved as shift
+  ! shift/reduce conflict for MULTIPLY resolved as shift
+    $end            reduce using rule 8 (expression -> expression MOD expression .)
+    RPAREN          reduce using rule 8 (expression -> expression MOD expression .)
+    MOD             shift and go to state 11
+    PLUS            shift and go to state 12
+    MINUS           shift and go to state 13
+    DIVIDE          shift and go to state 14
+    MULTIPLY        shift and go to state 15
+
+  ! MOD             [ reduce using rule 8 (expression -> expression MOD expression .) ]
+  ! PLUS            [ reduce using rule 8 (expression -> expression MOD expression .) ]
+  ! MINUS           [ reduce using rule 8 (expression -> expression MOD expression .) ]
+  ! DIVIDE          [ reduce using rule 8 (expression -> expression MOD expression .) ]
+  ! MULTIPLY        [ reduce using rule 8 (expression -> expression MOD expression .) ]
+
+
+state 18
+
+    (9) expression -> expression PLUS expression .
+    (8) expression -> expression . MOD expression
+    (9) expression -> expression . PLUS expression
+    (10) expression -> expression . MINUS expression
+    (11) expression -> expression . DIVIDE expression
+    (12) expression -> expression . MULTIPLY expression
+
+    MOD             reduce using rule 9 (expression -> expression PLUS expression .)
+    PLUS            reduce using rule 9 (expression -> expression PLUS expression .)
+    MINUS           reduce using rule 9 (expression -> expression PLUS expression .)
+    $end            reduce using rule 9 (expression -> expression PLUS expression .)
+    RPAREN          reduce using rule 9 (expression -> expression PLUS expression .)
+    DIVIDE          shift and go to state 14
+    MULTIPLY        shift and go to state 15
+
+  ! DIVIDE          [ reduce using rule 9 (expression -> expression PLUS expression .) ]
+  ! MULTIPLY        [ reduce using rule 9 (expression -> expression PLUS expression .) ]
+  ! MOD             [ shift and go to state 11 ]
+  ! PLUS            [ shift and go to state 12 ]
+  ! MINUS           [ shift and go to state 13 ]
+
+
+state 19
+
+    (10) expression -> expression MINUS expression .
+    (8) expression -> expression . MOD expression
+    (9) expression -> expression . PLUS expression
+    (10) expression -> expression . MINUS expression
+    (11) expression -> expression . DIVIDE expression
+    (12) expression -> expression . MULTIPLY expression
+
+    MOD             reduce using rule 10 (expression -> expression MINUS expression .)
+    PLUS            reduce using rule 10 (expression -> expression MINUS expression .)
+    MINUS           reduce using rule 10 (expression -> expression MINUS expression .)
+    $end            reduce using rule 10 (expression -> expression MINUS expression .)
+    RPAREN          reduce using rule 10 (expression -> expression MINUS expression .)
+    DIVIDE          shift and go to state 14
+    MULTIPLY        shift and go to state 15
+
+  ! DIVIDE          [ reduce using rule 10 (expression -> expression MINUS expression .) ]
+  ! MULTIPLY        [ reduce using rule 10 (expression -> expression MINUS expression .) ]
+  ! MOD             [ shift and go to state 11 ]
+  ! PLUS            [ shift and go to state 12 ]
+  ! MINUS           [ shift and go to state 13 ]
+
+
+state 20
+
+    (11) expression -> expression DIVIDE expression .
+    (8) expression -> expression . MOD expression
+    (9) expression -> expression . PLUS expression
+    (10) expression -> expression . MINUS expression
+    (11) expression -> expression . DIVIDE expression
+    (12) expression -> expression . MULTIPLY expression
+
+    MOD             reduce using rule 11 (expression -> expression DIVIDE expression .)
+    PLUS            reduce using rule 11 (expression -> expression DIVIDE expression .)
+    MINUS           reduce using rule 11 (expression -> expression DIVIDE expression .)
+    DIVIDE          reduce using rule 11 (expression -> expression DIVIDE expression .)
+    MULTIPLY        reduce using rule 11 (expression -> expression DIVIDE expression .)
+    $end            reduce using rule 11 (expression -> expression DIVIDE expression .)
+    RPAREN          reduce using rule 11 (expression -> expression DIVIDE expression .)
+
+  ! MOD             [ shift and go to state 11 ]
+  ! PLUS            [ shift and go to state 12 ]
+  ! MINUS           [ shift and go to state 13 ]
+  ! DIVIDE          [ shift and go to state 14 ]
+  ! MULTIPLY        [ shift and go to state 15 ]
+
+
+state 21
+
+    (12) expression -> expression MULTIPLY expression .
+    (8) expression -> expression . MOD expression
+    (9) expression -> expression . PLUS expression
+    (10) expression -> expression . MINUS expression
+    (11) expression -> expression . DIVIDE expression
+    (12) expression -> expression . MULTIPLY expression
+
+    MOD             reduce using rule 12 (expression -> expression MULTIPLY expression .)
+    PLUS            reduce using rule 12 (expression -> expression MULTIPLY expression .)
+    MINUS           reduce using rule 12 (expression -> expression MULTIPLY expression .)
+    DIVIDE          reduce using rule 12 (expression -> expression MULTIPLY expression .)
+    MULTIPLY        reduce using rule 12 (expression -> expression MULTIPLY expression .)
+    $end            reduce using rule 12 (expression -> expression MULTIPLY expression .)
+    RPAREN          reduce using rule 12 (expression -> expression MULTIPLY expression .)
+
+  ! MOD             [ shift and go to state 11 ]
+  ! PLUS            [ shift and go to state 12 ]
+  ! MINUS           [ shift and go to state 13 ]
+  ! DIVIDE          [ shift and go to state 14 ]
+  ! MULTIPLY        [ shift and go to state 15 ]
+
+
+state 22
+
+    (7) expression -> LPAREN expression RPAREN .
+
+    MOD             reduce using rule 7 (expression -> LPAREN expression RPAREN .)
+    PLUS            reduce using rule 7 (expression -> LPAREN expression RPAREN .)
+    MINUS           reduce using rule 7 (expression -> LPAREN expression RPAREN .)
+    DIVIDE          reduce using rule 7 (expression -> LPAREN expression RPAREN .)
+    MULTIPLY        reduce using rule 7 (expression -> LPAREN expression RPAREN .)
+    $end            reduce using rule 7 (expression -> LPAREN expression RPAREN .)
+    RPAREN          reduce using rule 7 (expression -> LPAREN expression RPAREN .)
+
+WARNING: 
+WARNING: Conflicts:
+WARNING: 
+WARNING: shift/reduce conflict for MOD in state 17 resolved as shift
+WARNING: shift/reduce conflict for PLUS in state 17 resolved as shift
+WARNING: shift/reduce conflict for MINUS in state 17 resolved as shift
+WARNING: shift/reduce conflict for DIVIDE in state 17 resolved as shift
+WARNING: shift/reduce conflict for MULTIPLY in state 17 resolved as shift

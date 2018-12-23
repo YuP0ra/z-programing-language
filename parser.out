@@ -2,419 +2,1506 @@ Created by PLY version 3.11 (http://www.dabeaz.com/ply)
 
 Unused terminals:
 
-    R_DEF
+    R_FOR
 
 Grammar
 
-Rule 0     S' -> sourcecode
-Rule 1     sourcecode -> NEWLINE
-Rule 2     sourcecode -> assignment
-Rule 3     assignment -> ID ASSIGN expression
-Rule 4     assignment -> ID
-Rule 5     expression -> LPAREN expression RPAREN
-Rule 6     expression -> expression MOD expression
-Rule 7     expression -> expression PLUS expression
-Rule 8     expression -> expression MINUS expression
-Rule 9     expression -> expression DIVIDE expression
-Rule 10    expression -> expression MULTIPLY expression
-Rule 11    expression -> NUM
-Rule 12    expression -> ID
+Rule 0     S' -> parsetree
+Rule 1     parsetree -> program
+Rule 2     program -> line program
+Rule 3     program -> <empty>
+Rule 4     line -> NEWLINE
+Rule 5     line -> assignment
+Rule 6     line -> declaration
+Rule 7     line -> methodcall
+Rule 8     line -> returnfunc
+Rule 9     line -> decision
+Rule 10    line -> loop
+Rule 11    assignment -> ID ASSIGN idexpr
+Rule 12    assignment -> ID
+Rule 13    idexpr -> value mathopt idexpr
+Rule 14    idexpr -> value
+Rule 15    value -> ID
+Rule 16    value -> BOOL
+Rule 17    value -> STRING
+Rule 18    value -> expression
+Rule 19    value -> methodcall
+Rule 20    declaration -> R_DEF ID LPAREN args RPAREN COLON LPAREN program RPAREN
+Rule 21    args -> args COMMA args
+Rule 22    args -> ID
+Rule 23    args -> <empty>
+Rule 24    methodcall -> ID LPAREN callargs RPAREN
+Rule 25    callargs -> callargs COMMA callargs
+Rule 26    callargs -> value
+Rule 27    callargs -> <empty>
+Rule 28    returnfunc -> R_RETURN
+Rule 29    returnfunc -> R_RETURN value
+Rule 30    expression -> LPAREN expression RPAREN
+Rule 31    expression -> num mathopt expression
+Rule 32    expression -> num
+Rule 33    num -> INTEGER
+Rule 34    num -> FLOAT
+Rule 35    mathopt -> PLUS
+Rule 36    mathopt -> MINUS
+Rule 37    mathopt -> MULTIPLY
+Rule 38    mathopt -> DIVIDE
+Rule 39    mathopt -> MOD
+Rule 40    decision -> R_IF condition COLON LPAREN program RPAREN
+Rule 41    loop -> R_WHILE condition COLON LPAREN program RPAREN
+Rule 42    condition -> BOOL
+Rule 43    condition -> ID condopt value
+Rule 44    condition -> LPAREN condition RPAREN
+Rule 45    condition -> condition condexpend condition
+Rule 46    condopt -> EQUAL
+Rule 47    condopt -> NOTEQUAL
+Rule 48    condexpend -> R_AND
+Rule 49    condexpend -> R_NOT
+Rule 50    condexpend -> R_OR
 
 Terminals, with rules where they appear
 
-ASSIGN               : 3
-DIVIDE               : 9
-ID                   : 3 4 12
-LPAREN               : 5
-MINUS                : 8
-MOD                  : 6
-MULTIPLY             : 10
-NEWLINE              : 1
-NUM                  : 11
-PLUS                 : 7
-RPAREN               : 5
-R_DEF                : 
+ASSIGN               : 11
+BOOL                 : 16 42
+COLON                : 20 40 41
+COMMA                : 21 25
+DIVIDE               : 38
+EQUAL                : 46
+FLOAT                : 34
+ID                   : 11 12 15 20 22 24 43
+INTEGER              : 33
+LPAREN               : 20 20 24 30 40 41 44
+MINUS                : 36
+MOD                  : 39
+MULTIPLY             : 37
+NEWLINE              : 4
+NOTEQUAL             : 47
+PLUS                 : 35
+RPAREN               : 20 20 24 30 40 41 44
+R_AND                : 48
+R_DEF                : 20
+R_FOR                : 
+R_IF                 : 40
+R_NOT                : 49
+R_OR                 : 50
+R_RETURN             : 28 29
+R_WHILE              : 41
+STRING               : 17
 error                : 
 
 Nonterminals, with rules where they appear
 
-assignment           : 2
-expression           : 3 5 6 6 7 7 8 8 9 9 10 10
-sourcecode           : 0
+args                 : 20 21 21
+assignment           : 5
+callargs             : 24 25 25
+condexpend           : 45
+condition            : 40 41 44 45 45
+condopt              : 43
+decision             : 9
+declaration          : 6
+expression           : 18 30 31
+idexpr               : 11 13
+line                 : 2
+loop                 : 10
+mathopt              : 13 31
+methodcall           : 7 19
+num                  : 31 32
+parsetree            : 0
+program              : 1 2 20 40 41
+returnfunc           : 8
+value                : 13 14 26 29 43
 
 Parsing method: LALR
 
 state 0
 
-    (0) S' -> . sourcecode
-    (1) sourcecode -> . NEWLINE
-    (2) sourcecode -> . assignment
-    (3) assignment -> . ID ASSIGN expression
-    (4) assignment -> . ID
+    (0) S' -> . parsetree
+    (1) parsetree -> . program
+    (2) program -> . line program
+    (3) program -> .
+    (4) line -> . NEWLINE
+    (5) line -> . assignment
+    (6) line -> . declaration
+    (7) line -> . methodcall
+    (8) line -> . returnfunc
+    (9) line -> . decision
+    (10) line -> . loop
+    (11) assignment -> . ID ASSIGN idexpr
+    (12) assignment -> . ID
+    (20) declaration -> . R_DEF ID LPAREN args RPAREN COLON LPAREN program RPAREN
+    (24) methodcall -> . ID LPAREN callargs RPAREN
+    (28) returnfunc -> . R_RETURN
+    (29) returnfunc -> . R_RETURN value
+    (40) decision -> . R_IF condition COLON LPAREN program RPAREN
+    (41) loop -> . R_WHILE condition COLON LPAREN program RPAREN
 
-    NEWLINE         shift and go to state 2
-    ID              shift and go to state 4
+    $end            reduce using rule 3 (program -> .)
+    NEWLINE         shift and go to state 4
+    ID              shift and go to state 11
+    R_DEF           shift and go to state 12
+    R_RETURN        shift and go to state 13
+    R_IF            shift and go to state 14
+    R_WHILE         shift and go to state 15
 
-    sourcecode                     shift and go to state 1
-    assignment                     shift and go to state 3
+    parsetree                      shift and go to state 1
+    program                        shift and go to state 2
+    line                           shift and go to state 3
+    assignment                     shift and go to state 5
+    declaration                    shift and go to state 6
+    methodcall                     shift and go to state 7
+    returnfunc                     shift and go to state 8
+    decision                       shift and go to state 9
+    loop                           shift and go to state 10
 
 state 1
 
-    (0) S' -> sourcecode .
+    (0) S' -> parsetree .
 
 
 
 state 2
 
-    (1) sourcecode -> NEWLINE .
+    (1) parsetree -> program .
 
-    $end            reduce using rule 1 (sourcecode -> NEWLINE .)
+    $end            reduce using rule 1 (parsetree -> program .)
 
 
 state 3
 
-    (2) sourcecode -> assignment .
+    (2) program -> line . program
+    (2) program -> . line program
+    (3) program -> .
+    (4) line -> . NEWLINE
+    (5) line -> . assignment
+    (6) line -> . declaration
+    (7) line -> . methodcall
+    (8) line -> . returnfunc
+    (9) line -> . decision
+    (10) line -> . loop
+    (11) assignment -> . ID ASSIGN idexpr
+    (12) assignment -> . ID
+    (20) declaration -> . R_DEF ID LPAREN args RPAREN COLON LPAREN program RPAREN
+    (24) methodcall -> . ID LPAREN callargs RPAREN
+    (28) returnfunc -> . R_RETURN
+    (29) returnfunc -> . R_RETURN value
+    (40) decision -> . R_IF condition COLON LPAREN program RPAREN
+    (41) loop -> . R_WHILE condition COLON LPAREN program RPAREN
 
-    $end            reduce using rule 2 (sourcecode -> assignment .)
+    $end            reduce using rule 3 (program -> .)
+    RPAREN          reduce using rule 3 (program -> .)
+    NEWLINE         shift and go to state 4
+    ID              shift and go to state 11
+    R_DEF           shift and go to state 12
+    R_RETURN        shift and go to state 13
+    R_IF            shift and go to state 14
+    R_WHILE         shift and go to state 15
 
+    line                           shift and go to state 3
+    program                        shift and go to state 16
+    assignment                     shift and go to state 5
+    declaration                    shift and go to state 6
+    methodcall                     shift and go to state 7
+    returnfunc                     shift and go to state 8
+    decision                       shift and go to state 9
+    loop                           shift and go to state 10
 
 state 4
 
-    (3) assignment -> ID . ASSIGN expression
-    (4) assignment -> ID .
+    (4) line -> NEWLINE .
 
-    ASSIGN          shift and go to state 5
-    $end            reduce using rule 4 (assignment -> ID .)
+    NEWLINE         reduce using rule 4 (line -> NEWLINE .)
+    ID              reduce using rule 4 (line -> NEWLINE .)
+    R_DEF           reduce using rule 4 (line -> NEWLINE .)
+    R_RETURN        reduce using rule 4 (line -> NEWLINE .)
+    R_IF            reduce using rule 4 (line -> NEWLINE .)
+    R_WHILE         reduce using rule 4 (line -> NEWLINE .)
+    $end            reduce using rule 4 (line -> NEWLINE .)
+    RPAREN          reduce using rule 4 (line -> NEWLINE .)
 
 
 state 5
 
-    (3) assignment -> ID ASSIGN . expression
-    (5) expression -> . LPAREN expression RPAREN
-    (6) expression -> . expression MOD expression
-    (7) expression -> . expression PLUS expression
-    (8) expression -> . expression MINUS expression
-    (9) expression -> . expression DIVIDE expression
-    (10) expression -> . expression MULTIPLY expression
-    (11) expression -> . NUM
-    (12) expression -> . ID
+    (5) line -> assignment .
 
-    LPAREN          shift and go to state 8
-    NUM             shift and go to state 9
-    ID              shift and go to state 6
+    NEWLINE         reduce using rule 5 (line -> assignment .)
+    ID              reduce using rule 5 (line -> assignment .)
+    R_DEF           reduce using rule 5 (line -> assignment .)
+    R_RETURN        reduce using rule 5 (line -> assignment .)
+    R_IF            reduce using rule 5 (line -> assignment .)
+    R_WHILE         reduce using rule 5 (line -> assignment .)
+    $end            reduce using rule 5 (line -> assignment .)
+    RPAREN          reduce using rule 5 (line -> assignment .)
 
-    expression                     shift and go to state 7
 
 state 6
 
-    (12) expression -> ID .
+    (6) line -> declaration .
 
-    MOD             reduce using rule 12 (expression -> ID .)
-    PLUS            reduce using rule 12 (expression -> ID .)
-    MINUS           reduce using rule 12 (expression -> ID .)
-    DIVIDE          reduce using rule 12 (expression -> ID .)
-    MULTIPLY        reduce using rule 12 (expression -> ID .)
-    $end            reduce using rule 12 (expression -> ID .)
-    RPAREN          reduce using rule 12 (expression -> ID .)
+    NEWLINE         reduce using rule 6 (line -> declaration .)
+    ID              reduce using rule 6 (line -> declaration .)
+    R_DEF           reduce using rule 6 (line -> declaration .)
+    R_RETURN        reduce using rule 6 (line -> declaration .)
+    R_IF            reduce using rule 6 (line -> declaration .)
+    R_WHILE         reduce using rule 6 (line -> declaration .)
+    $end            reduce using rule 6 (line -> declaration .)
+    RPAREN          reduce using rule 6 (line -> declaration .)
 
 
 state 7
 
-    (3) assignment -> ID ASSIGN expression .
-    (6) expression -> expression . MOD expression
-    (7) expression -> expression . PLUS expression
-    (8) expression -> expression . MINUS expression
-    (9) expression -> expression . DIVIDE expression
-    (10) expression -> expression . MULTIPLY expression
+    (7) line -> methodcall .
 
-    $end            reduce using rule 3 (assignment -> ID ASSIGN expression .)
-    MOD             shift and go to state 10
-    PLUS            shift and go to state 11
-    MINUS           shift and go to state 12
-    DIVIDE          shift and go to state 13
-    MULTIPLY        shift and go to state 14
+    NEWLINE         reduce using rule 7 (line -> methodcall .)
+    ID              reduce using rule 7 (line -> methodcall .)
+    R_DEF           reduce using rule 7 (line -> methodcall .)
+    R_RETURN        reduce using rule 7 (line -> methodcall .)
+    R_IF            reduce using rule 7 (line -> methodcall .)
+    R_WHILE         reduce using rule 7 (line -> methodcall .)
+    $end            reduce using rule 7 (line -> methodcall .)
+    RPAREN          reduce using rule 7 (line -> methodcall .)
 
 
 state 8
 
-    (5) expression -> LPAREN . expression RPAREN
-    (5) expression -> . LPAREN expression RPAREN
-    (6) expression -> . expression MOD expression
-    (7) expression -> . expression PLUS expression
-    (8) expression -> . expression MINUS expression
-    (9) expression -> . expression DIVIDE expression
-    (10) expression -> . expression MULTIPLY expression
-    (11) expression -> . NUM
-    (12) expression -> . ID
+    (8) line -> returnfunc .
 
-    LPAREN          shift and go to state 8
-    NUM             shift and go to state 9
-    ID              shift and go to state 6
+    NEWLINE         reduce using rule 8 (line -> returnfunc .)
+    ID              reduce using rule 8 (line -> returnfunc .)
+    R_DEF           reduce using rule 8 (line -> returnfunc .)
+    R_RETURN        reduce using rule 8 (line -> returnfunc .)
+    R_IF            reduce using rule 8 (line -> returnfunc .)
+    R_WHILE         reduce using rule 8 (line -> returnfunc .)
+    $end            reduce using rule 8 (line -> returnfunc .)
+    RPAREN          reduce using rule 8 (line -> returnfunc .)
 
-    expression                     shift and go to state 15
 
 state 9
 
-    (11) expression -> NUM .
+    (9) line -> decision .
 
-    MOD             reduce using rule 11 (expression -> NUM .)
-    PLUS            reduce using rule 11 (expression -> NUM .)
-    MINUS           reduce using rule 11 (expression -> NUM .)
-    DIVIDE          reduce using rule 11 (expression -> NUM .)
-    MULTIPLY        reduce using rule 11 (expression -> NUM .)
-    $end            reduce using rule 11 (expression -> NUM .)
-    RPAREN          reduce using rule 11 (expression -> NUM .)
+    NEWLINE         reduce using rule 9 (line -> decision .)
+    ID              reduce using rule 9 (line -> decision .)
+    R_DEF           reduce using rule 9 (line -> decision .)
+    R_RETURN        reduce using rule 9 (line -> decision .)
+    R_IF            reduce using rule 9 (line -> decision .)
+    R_WHILE         reduce using rule 9 (line -> decision .)
+    $end            reduce using rule 9 (line -> decision .)
+    RPAREN          reduce using rule 9 (line -> decision .)
 
 
 state 10
 
-    (6) expression -> expression MOD . expression
-    (5) expression -> . LPAREN expression RPAREN
-    (6) expression -> . expression MOD expression
-    (7) expression -> . expression PLUS expression
-    (8) expression -> . expression MINUS expression
-    (9) expression -> . expression DIVIDE expression
-    (10) expression -> . expression MULTIPLY expression
-    (11) expression -> . NUM
-    (12) expression -> . ID
+    (10) line -> loop .
 
-    LPAREN          shift and go to state 8
-    NUM             shift and go to state 9
-    ID              shift and go to state 6
+    NEWLINE         reduce using rule 10 (line -> loop .)
+    ID              reduce using rule 10 (line -> loop .)
+    R_DEF           reduce using rule 10 (line -> loop .)
+    R_RETURN        reduce using rule 10 (line -> loop .)
+    R_IF            reduce using rule 10 (line -> loop .)
+    R_WHILE         reduce using rule 10 (line -> loop .)
+    $end            reduce using rule 10 (line -> loop .)
+    RPAREN          reduce using rule 10 (line -> loop .)
 
-    expression                     shift and go to state 16
 
 state 11
 
-    (7) expression -> expression PLUS . expression
-    (5) expression -> . LPAREN expression RPAREN
-    (6) expression -> . expression MOD expression
-    (7) expression -> . expression PLUS expression
-    (8) expression -> . expression MINUS expression
-    (9) expression -> . expression DIVIDE expression
-    (10) expression -> . expression MULTIPLY expression
-    (11) expression -> . NUM
-    (12) expression -> . ID
+    (11) assignment -> ID . ASSIGN idexpr
+    (12) assignment -> ID .
+    (24) methodcall -> ID . LPAREN callargs RPAREN
 
-    LPAREN          shift and go to state 8
-    NUM             shift and go to state 9
-    ID              shift and go to state 6
+    ASSIGN          shift and go to state 17
+    NEWLINE         reduce using rule 12 (assignment -> ID .)
+    ID              reduce using rule 12 (assignment -> ID .)
+    R_DEF           reduce using rule 12 (assignment -> ID .)
+    R_RETURN        reduce using rule 12 (assignment -> ID .)
+    R_IF            reduce using rule 12 (assignment -> ID .)
+    R_WHILE         reduce using rule 12 (assignment -> ID .)
+    $end            reduce using rule 12 (assignment -> ID .)
+    RPAREN          reduce using rule 12 (assignment -> ID .)
+    LPAREN          shift and go to state 18
 
-    expression                     shift and go to state 17
 
 state 12
 
-    (8) expression -> expression MINUS . expression
-    (5) expression -> . LPAREN expression RPAREN
-    (6) expression -> . expression MOD expression
-    (7) expression -> . expression PLUS expression
-    (8) expression -> . expression MINUS expression
-    (9) expression -> . expression DIVIDE expression
-    (10) expression -> . expression MULTIPLY expression
-    (11) expression -> . NUM
-    (12) expression -> . ID
+    (20) declaration -> R_DEF . ID LPAREN args RPAREN COLON LPAREN program RPAREN
 
-    LPAREN          shift and go to state 8
-    NUM             shift and go to state 9
-    ID              shift and go to state 6
+    ID              shift and go to state 19
 
-    expression                     shift and go to state 18
 
 state 13
 
-    (9) expression -> expression DIVIDE . expression
-    (5) expression -> . LPAREN expression RPAREN
-    (6) expression -> . expression MOD expression
-    (7) expression -> . expression PLUS expression
-    (8) expression -> . expression MINUS expression
-    (9) expression -> . expression DIVIDE expression
-    (10) expression -> . expression MULTIPLY expression
-    (11) expression -> . NUM
-    (12) expression -> . ID
+    (28) returnfunc -> R_RETURN .
+    (29) returnfunc -> R_RETURN . value
+    (15) value -> . ID
+    (16) value -> . BOOL
+    (17) value -> . STRING
+    (18) value -> . expression
+    (19) value -> . methodcall
+    (30) expression -> . LPAREN expression RPAREN
+    (31) expression -> . num mathopt expression
+    (32) expression -> . num
+    (24) methodcall -> . ID LPAREN callargs RPAREN
+    (33) num -> . INTEGER
+    (34) num -> . FLOAT
 
-    LPAREN          shift and go to state 8
-    NUM             shift and go to state 9
-    ID              shift and go to state 6
+  ! shift/reduce conflict for ID resolved as shift
+    NEWLINE         reduce using rule 28 (returnfunc -> R_RETURN .)
+    R_DEF           reduce using rule 28 (returnfunc -> R_RETURN .)
+    R_RETURN        reduce using rule 28 (returnfunc -> R_RETURN .)
+    R_IF            reduce using rule 28 (returnfunc -> R_RETURN .)
+    R_WHILE         reduce using rule 28 (returnfunc -> R_RETURN .)
+    $end            reduce using rule 28 (returnfunc -> R_RETURN .)
+    RPAREN          reduce using rule 28 (returnfunc -> R_RETURN .)
+    ID              shift and go to state 21
+    BOOL            shift and go to state 22
+    STRING          shift and go to state 23
+    LPAREN          shift and go to state 26
+    INTEGER         shift and go to state 28
+    FLOAT           shift and go to state 29
 
-    expression                     shift and go to state 19
+  ! ID              [ reduce using rule 28 (returnfunc -> R_RETURN .) ]
+
+    value                          shift and go to state 20
+    expression                     shift and go to state 24
+    methodcall                     shift and go to state 25
+    num                            shift and go to state 27
 
 state 14
 
-    (10) expression -> expression MULTIPLY . expression
-    (5) expression -> . LPAREN expression RPAREN
-    (6) expression -> . expression MOD expression
-    (7) expression -> . expression PLUS expression
-    (8) expression -> . expression MINUS expression
-    (9) expression -> . expression DIVIDE expression
-    (10) expression -> . expression MULTIPLY expression
-    (11) expression -> . NUM
-    (12) expression -> . ID
+    (40) decision -> R_IF . condition COLON LPAREN program RPAREN
+    (42) condition -> . BOOL
+    (43) condition -> . ID condopt value
+    (44) condition -> . LPAREN condition RPAREN
+    (45) condition -> . condition condexpend condition
 
-    LPAREN          shift and go to state 8
-    NUM             shift and go to state 9
-    ID              shift and go to state 6
+    BOOL            shift and go to state 32
+    ID              shift and go to state 33
+    LPAREN          shift and go to state 31
 
-    expression                     shift and go to state 20
+    condition                      shift and go to state 30
 
 state 15
 
-    (5) expression -> LPAREN expression . RPAREN
-    (6) expression -> expression . MOD expression
-    (7) expression -> expression . PLUS expression
-    (8) expression -> expression . MINUS expression
-    (9) expression -> expression . DIVIDE expression
-    (10) expression -> expression . MULTIPLY expression
+    (41) loop -> R_WHILE . condition COLON LPAREN program RPAREN
+    (42) condition -> . BOOL
+    (43) condition -> . ID condopt value
+    (44) condition -> . LPAREN condition RPAREN
+    (45) condition -> . condition condexpend condition
 
-    RPAREN          shift and go to state 21
-    MOD             shift and go to state 10
-    PLUS            shift and go to state 11
-    MINUS           shift and go to state 12
-    DIVIDE          shift and go to state 13
-    MULTIPLY        shift and go to state 14
+    BOOL            shift and go to state 32
+    ID              shift and go to state 33
+    LPAREN          shift and go to state 31
 
+    condition                      shift and go to state 34
 
 state 16
 
-    (6) expression -> expression MOD expression .
-    (6) expression -> expression . MOD expression
-    (7) expression -> expression . PLUS expression
-    (8) expression -> expression . MINUS expression
-    (9) expression -> expression . DIVIDE expression
-    (10) expression -> expression . MULTIPLY expression
+    (2) program -> line program .
 
-  ! shift/reduce conflict for MOD resolved as shift
-  ! shift/reduce conflict for PLUS resolved as shift
-  ! shift/reduce conflict for MINUS resolved as shift
-  ! shift/reduce conflict for DIVIDE resolved as shift
-  ! shift/reduce conflict for MULTIPLY resolved as shift
-    $end            reduce using rule 6 (expression -> expression MOD expression .)
-    RPAREN          reduce using rule 6 (expression -> expression MOD expression .)
-    MOD             shift and go to state 10
-    PLUS            shift and go to state 11
-    MINUS           shift and go to state 12
-    DIVIDE          shift and go to state 13
-    MULTIPLY        shift and go to state 14
-
-  ! MOD             [ reduce using rule 6 (expression -> expression MOD expression .) ]
-  ! PLUS            [ reduce using rule 6 (expression -> expression MOD expression .) ]
-  ! MINUS           [ reduce using rule 6 (expression -> expression MOD expression .) ]
-  ! DIVIDE          [ reduce using rule 6 (expression -> expression MOD expression .) ]
-  ! MULTIPLY        [ reduce using rule 6 (expression -> expression MOD expression .) ]
+    $end            reduce using rule 2 (program -> line program .)
+    RPAREN          reduce using rule 2 (program -> line program .)
 
 
 state 17
 
-    (7) expression -> expression PLUS expression .
-    (6) expression -> expression . MOD expression
-    (7) expression -> expression . PLUS expression
-    (8) expression -> expression . MINUS expression
-    (9) expression -> expression . DIVIDE expression
-    (10) expression -> expression . MULTIPLY expression
+    (11) assignment -> ID ASSIGN . idexpr
+    (13) idexpr -> . value mathopt idexpr
+    (14) idexpr -> . value
+    (15) value -> . ID
+    (16) value -> . BOOL
+    (17) value -> . STRING
+    (18) value -> . expression
+    (19) value -> . methodcall
+    (30) expression -> . LPAREN expression RPAREN
+    (31) expression -> . num mathopt expression
+    (32) expression -> . num
+    (24) methodcall -> . ID LPAREN callargs RPAREN
+    (33) num -> . INTEGER
+    (34) num -> . FLOAT
 
-    MOD             reduce using rule 7 (expression -> expression PLUS expression .)
-    PLUS            reduce using rule 7 (expression -> expression PLUS expression .)
-    MINUS           reduce using rule 7 (expression -> expression PLUS expression .)
-    $end            reduce using rule 7 (expression -> expression PLUS expression .)
-    RPAREN          reduce using rule 7 (expression -> expression PLUS expression .)
-    DIVIDE          shift and go to state 13
-    MULTIPLY        shift and go to state 14
+    ID              shift and go to state 21
+    BOOL            shift and go to state 22
+    STRING          shift and go to state 23
+    LPAREN          shift and go to state 26
+    INTEGER         shift and go to state 28
+    FLOAT           shift and go to state 29
 
-  ! DIVIDE          [ reduce using rule 7 (expression -> expression PLUS expression .) ]
-  ! MULTIPLY        [ reduce using rule 7 (expression -> expression PLUS expression .) ]
-  ! MOD             [ shift and go to state 10 ]
-  ! PLUS            [ shift and go to state 11 ]
-  ! MINUS           [ shift and go to state 12 ]
-
+    idexpr                         shift and go to state 35
+    value                          shift and go to state 36
+    expression                     shift and go to state 24
+    methodcall                     shift and go to state 25
+    num                            shift and go to state 27
 
 state 18
 
-    (8) expression -> expression MINUS expression .
-    (6) expression -> expression . MOD expression
-    (7) expression -> expression . PLUS expression
-    (8) expression -> expression . MINUS expression
-    (9) expression -> expression . DIVIDE expression
-    (10) expression -> expression . MULTIPLY expression
+    (24) methodcall -> ID LPAREN . callargs RPAREN
+    (25) callargs -> . callargs COMMA callargs
+    (26) callargs -> . value
+    (27) callargs -> .
+    (15) value -> . ID
+    (16) value -> . BOOL
+    (17) value -> . STRING
+    (18) value -> . expression
+    (19) value -> . methodcall
+    (30) expression -> . LPAREN expression RPAREN
+    (31) expression -> . num mathopt expression
+    (32) expression -> . num
+    (24) methodcall -> . ID LPAREN callargs RPAREN
+    (33) num -> . INTEGER
+    (34) num -> . FLOAT
 
-    MOD             reduce using rule 8 (expression -> expression MINUS expression .)
-    PLUS            reduce using rule 8 (expression -> expression MINUS expression .)
-    MINUS           reduce using rule 8 (expression -> expression MINUS expression .)
-    $end            reduce using rule 8 (expression -> expression MINUS expression .)
-    RPAREN          reduce using rule 8 (expression -> expression MINUS expression .)
-    DIVIDE          shift and go to state 13
-    MULTIPLY        shift and go to state 14
+    RPAREN          reduce using rule 27 (callargs -> .)
+    COMMA           reduce using rule 27 (callargs -> .)
+    ID              shift and go to state 21
+    BOOL            shift and go to state 22
+    STRING          shift and go to state 23
+    LPAREN          shift and go to state 26
+    INTEGER         shift and go to state 28
+    FLOAT           shift and go to state 29
 
-  ! DIVIDE          [ reduce using rule 8 (expression -> expression MINUS expression .) ]
-  ! MULTIPLY        [ reduce using rule 8 (expression -> expression MINUS expression .) ]
-  ! MOD             [ shift and go to state 10 ]
-  ! PLUS            [ shift and go to state 11 ]
-  ! MINUS           [ shift and go to state 12 ]
-
+    callargs                       shift and go to state 37
+    value                          shift and go to state 38
+    expression                     shift and go to state 24
+    methodcall                     shift and go to state 25
+    num                            shift and go to state 27
 
 state 19
 
-    (9) expression -> expression DIVIDE expression .
-    (6) expression -> expression . MOD expression
-    (7) expression -> expression . PLUS expression
-    (8) expression -> expression . MINUS expression
-    (9) expression -> expression . DIVIDE expression
-    (10) expression -> expression . MULTIPLY expression
+    (20) declaration -> R_DEF ID . LPAREN args RPAREN COLON LPAREN program RPAREN
 
-    MOD             reduce using rule 9 (expression -> expression DIVIDE expression .)
-    PLUS            reduce using rule 9 (expression -> expression DIVIDE expression .)
-    MINUS           reduce using rule 9 (expression -> expression DIVIDE expression .)
-    DIVIDE          reduce using rule 9 (expression -> expression DIVIDE expression .)
-    MULTIPLY        reduce using rule 9 (expression -> expression DIVIDE expression .)
-    $end            reduce using rule 9 (expression -> expression DIVIDE expression .)
-    RPAREN          reduce using rule 9 (expression -> expression DIVIDE expression .)
-
-  ! MOD             [ shift and go to state 10 ]
-  ! PLUS            [ shift and go to state 11 ]
-  ! MINUS           [ shift and go to state 12 ]
-  ! DIVIDE          [ shift and go to state 13 ]
-  ! MULTIPLY        [ shift and go to state 14 ]
+    LPAREN          shift and go to state 39
 
 
 state 20
 
-    (10) expression -> expression MULTIPLY expression .
-    (6) expression -> expression . MOD expression
-    (7) expression -> expression . PLUS expression
-    (8) expression -> expression . MINUS expression
-    (9) expression -> expression . DIVIDE expression
-    (10) expression -> expression . MULTIPLY expression
+    (29) returnfunc -> R_RETURN value .
 
-    MOD             reduce using rule 10 (expression -> expression MULTIPLY expression .)
-    PLUS            reduce using rule 10 (expression -> expression MULTIPLY expression .)
-    MINUS           reduce using rule 10 (expression -> expression MULTIPLY expression .)
-    DIVIDE          reduce using rule 10 (expression -> expression MULTIPLY expression .)
-    MULTIPLY        reduce using rule 10 (expression -> expression MULTIPLY expression .)
-    $end            reduce using rule 10 (expression -> expression MULTIPLY expression .)
-    RPAREN          reduce using rule 10 (expression -> expression MULTIPLY expression .)
-
-  ! MOD             [ shift and go to state 10 ]
-  ! PLUS            [ shift and go to state 11 ]
-  ! MINUS           [ shift and go to state 12 ]
-  ! DIVIDE          [ shift and go to state 13 ]
-  ! MULTIPLY        [ shift and go to state 14 ]
+    NEWLINE         reduce using rule 29 (returnfunc -> R_RETURN value .)
+    ID              reduce using rule 29 (returnfunc -> R_RETURN value .)
+    R_DEF           reduce using rule 29 (returnfunc -> R_RETURN value .)
+    R_RETURN        reduce using rule 29 (returnfunc -> R_RETURN value .)
+    R_IF            reduce using rule 29 (returnfunc -> R_RETURN value .)
+    R_WHILE         reduce using rule 29 (returnfunc -> R_RETURN value .)
+    $end            reduce using rule 29 (returnfunc -> R_RETURN value .)
+    RPAREN          reduce using rule 29 (returnfunc -> R_RETURN value .)
 
 
 state 21
 
-    (5) expression -> LPAREN expression RPAREN .
+    (15) value -> ID .
+    (24) methodcall -> ID . LPAREN callargs RPAREN
 
-    MOD             reduce using rule 5 (expression -> LPAREN expression RPAREN .)
-    PLUS            reduce using rule 5 (expression -> LPAREN expression RPAREN .)
-    MINUS           reduce using rule 5 (expression -> LPAREN expression RPAREN .)
-    DIVIDE          reduce using rule 5 (expression -> LPAREN expression RPAREN .)
-    MULTIPLY        reduce using rule 5 (expression -> LPAREN expression RPAREN .)
-    $end            reduce using rule 5 (expression -> LPAREN expression RPAREN .)
-    RPAREN          reduce using rule 5 (expression -> LPAREN expression RPAREN .)
+    NEWLINE         reduce using rule 15 (value -> ID .)
+    ID              reduce using rule 15 (value -> ID .)
+    R_DEF           reduce using rule 15 (value -> ID .)
+    R_RETURN        reduce using rule 15 (value -> ID .)
+    R_IF            reduce using rule 15 (value -> ID .)
+    R_WHILE         reduce using rule 15 (value -> ID .)
+    $end            reduce using rule 15 (value -> ID .)
+    RPAREN          reduce using rule 15 (value -> ID .)
+    PLUS            reduce using rule 15 (value -> ID .)
+    MINUS           reduce using rule 15 (value -> ID .)
+    MULTIPLY        reduce using rule 15 (value -> ID .)
+    DIVIDE          reduce using rule 15 (value -> ID .)
+    MOD             reduce using rule 15 (value -> ID .)
+    COMMA           reduce using rule 15 (value -> ID .)
+    COLON           reduce using rule 15 (value -> ID .)
+    R_AND           reduce using rule 15 (value -> ID .)
+    R_NOT           reduce using rule 15 (value -> ID .)
+    R_OR            reduce using rule 15 (value -> ID .)
+    LPAREN          shift and go to state 18
+
+
+state 22
+
+    (16) value -> BOOL .
+
+    NEWLINE         reduce using rule 16 (value -> BOOL .)
+    ID              reduce using rule 16 (value -> BOOL .)
+    R_DEF           reduce using rule 16 (value -> BOOL .)
+    R_RETURN        reduce using rule 16 (value -> BOOL .)
+    R_IF            reduce using rule 16 (value -> BOOL .)
+    R_WHILE         reduce using rule 16 (value -> BOOL .)
+    $end            reduce using rule 16 (value -> BOOL .)
+    RPAREN          reduce using rule 16 (value -> BOOL .)
+    PLUS            reduce using rule 16 (value -> BOOL .)
+    MINUS           reduce using rule 16 (value -> BOOL .)
+    MULTIPLY        reduce using rule 16 (value -> BOOL .)
+    DIVIDE          reduce using rule 16 (value -> BOOL .)
+    MOD             reduce using rule 16 (value -> BOOL .)
+    COMMA           reduce using rule 16 (value -> BOOL .)
+    COLON           reduce using rule 16 (value -> BOOL .)
+    R_AND           reduce using rule 16 (value -> BOOL .)
+    R_NOT           reduce using rule 16 (value -> BOOL .)
+    R_OR            reduce using rule 16 (value -> BOOL .)
+
+
+state 23
+
+    (17) value -> STRING .
+
+    NEWLINE         reduce using rule 17 (value -> STRING .)
+    ID              reduce using rule 17 (value -> STRING .)
+    R_DEF           reduce using rule 17 (value -> STRING .)
+    R_RETURN        reduce using rule 17 (value -> STRING .)
+    R_IF            reduce using rule 17 (value -> STRING .)
+    R_WHILE         reduce using rule 17 (value -> STRING .)
+    $end            reduce using rule 17 (value -> STRING .)
+    RPAREN          reduce using rule 17 (value -> STRING .)
+    PLUS            reduce using rule 17 (value -> STRING .)
+    MINUS           reduce using rule 17 (value -> STRING .)
+    MULTIPLY        reduce using rule 17 (value -> STRING .)
+    DIVIDE          reduce using rule 17 (value -> STRING .)
+    MOD             reduce using rule 17 (value -> STRING .)
+    COMMA           reduce using rule 17 (value -> STRING .)
+    COLON           reduce using rule 17 (value -> STRING .)
+    R_AND           reduce using rule 17 (value -> STRING .)
+    R_NOT           reduce using rule 17 (value -> STRING .)
+    R_OR            reduce using rule 17 (value -> STRING .)
+
+
+state 24
+
+    (18) value -> expression .
+
+    NEWLINE         reduce using rule 18 (value -> expression .)
+    ID              reduce using rule 18 (value -> expression .)
+    R_DEF           reduce using rule 18 (value -> expression .)
+    R_RETURN        reduce using rule 18 (value -> expression .)
+    R_IF            reduce using rule 18 (value -> expression .)
+    R_WHILE         reduce using rule 18 (value -> expression .)
+    $end            reduce using rule 18 (value -> expression .)
+    RPAREN          reduce using rule 18 (value -> expression .)
+    PLUS            reduce using rule 18 (value -> expression .)
+    MINUS           reduce using rule 18 (value -> expression .)
+    MULTIPLY        reduce using rule 18 (value -> expression .)
+    DIVIDE          reduce using rule 18 (value -> expression .)
+    MOD             reduce using rule 18 (value -> expression .)
+    COMMA           reduce using rule 18 (value -> expression .)
+    COLON           reduce using rule 18 (value -> expression .)
+    R_AND           reduce using rule 18 (value -> expression .)
+    R_NOT           reduce using rule 18 (value -> expression .)
+    R_OR            reduce using rule 18 (value -> expression .)
+
+
+state 25
+
+    (19) value -> methodcall .
+
+    NEWLINE         reduce using rule 19 (value -> methodcall .)
+    ID              reduce using rule 19 (value -> methodcall .)
+    R_DEF           reduce using rule 19 (value -> methodcall .)
+    R_RETURN        reduce using rule 19 (value -> methodcall .)
+    R_IF            reduce using rule 19 (value -> methodcall .)
+    R_WHILE         reduce using rule 19 (value -> methodcall .)
+    $end            reduce using rule 19 (value -> methodcall .)
+    RPAREN          reduce using rule 19 (value -> methodcall .)
+    PLUS            reduce using rule 19 (value -> methodcall .)
+    MINUS           reduce using rule 19 (value -> methodcall .)
+    MULTIPLY        reduce using rule 19 (value -> methodcall .)
+    DIVIDE          reduce using rule 19 (value -> methodcall .)
+    MOD             reduce using rule 19 (value -> methodcall .)
+    COMMA           reduce using rule 19 (value -> methodcall .)
+    COLON           reduce using rule 19 (value -> methodcall .)
+    R_AND           reduce using rule 19 (value -> methodcall .)
+    R_NOT           reduce using rule 19 (value -> methodcall .)
+    R_OR            reduce using rule 19 (value -> methodcall .)
+
+
+state 26
+
+    (30) expression -> LPAREN . expression RPAREN
+    (30) expression -> . LPAREN expression RPAREN
+    (31) expression -> . num mathopt expression
+    (32) expression -> . num
+    (33) num -> . INTEGER
+    (34) num -> . FLOAT
+
+    LPAREN          shift and go to state 26
+    INTEGER         shift and go to state 28
+    FLOAT           shift and go to state 29
+
+    expression                     shift and go to state 40
+    num                            shift and go to state 27
+
+state 27
+
+    (31) expression -> num . mathopt expression
+    (32) expression -> num .
+    (35) mathopt -> . PLUS
+    (36) mathopt -> . MINUS
+    (37) mathopt -> . MULTIPLY
+    (38) mathopt -> . DIVIDE
+    (39) mathopt -> . MOD
+
+  ! shift/reduce conflict for PLUS resolved as shift
+  ! shift/reduce conflict for MINUS resolved as shift
+  ! shift/reduce conflict for MULTIPLY resolved as shift
+  ! shift/reduce conflict for DIVIDE resolved as shift
+  ! shift/reduce conflict for MOD resolved as shift
+    NEWLINE         reduce using rule 32 (expression -> num .)
+    ID              reduce using rule 32 (expression -> num .)
+    R_DEF           reduce using rule 32 (expression -> num .)
+    R_RETURN        reduce using rule 32 (expression -> num .)
+    R_IF            reduce using rule 32 (expression -> num .)
+    R_WHILE         reduce using rule 32 (expression -> num .)
+    $end            reduce using rule 32 (expression -> num .)
+    RPAREN          reduce using rule 32 (expression -> num .)
+    COMMA           reduce using rule 32 (expression -> num .)
+    COLON           reduce using rule 32 (expression -> num .)
+    R_AND           reduce using rule 32 (expression -> num .)
+    R_NOT           reduce using rule 32 (expression -> num .)
+    R_OR            reduce using rule 32 (expression -> num .)
+    PLUS            shift and go to state 42
+    MINUS           shift and go to state 43
+    MULTIPLY        shift and go to state 44
+    DIVIDE          shift and go to state 45
+    MOD             shift and go to state 46
+
+  ! PLUS            [ reduce using rule 32 (expression -> num .) ]
+  ! MINUS           [ reduce using rule 32 (expression -> num .) ]
+  ! MULTIPLY        [ reduce using rule 32 (expression -> num .) ]
+  ! DIVIDE          [ reduce using rule 32 (expression -> num .) ]
+  ! MOD             [ reduce using rule 32 (expression -> num .) ]
+
+    mathopt                        shift and go to state 41
+
+state 28
+
+    (33) num -> INTEGER .
+
+    PLUS            reduce using rule 33 (num -> INTEGER .)
+    MINUS           reduce using rule 33 (num -> INTEGER .)
+    MULTIPLY        reduce using rule 33 (num -> INTEGER .)
+    DIVIDE          reduce using rule 33 (num -> INTEGER .)
+    MOD             reduce using rule 33 (num -> INTEGER .)
+    NEWLINE         reduce using rule 33 (num -> INTEGER .)
+    ID              reduce using rule 33 (num -> INTEGER .)
+    R_DEF           reduce using rule 33 (num -> INTEGER .)
+    R_RETURN        reduce using rule 33 (num -> INTEGER .)
+    R_IF            reduce using rule 33 (num -> INTEGER .)
+    R_WHILE         reduce using rule 33 (num -> INTEGER .)
+    $end            reduce using rule 33 (num -> INTEGER .)
+    RPAREN          reduce using rule 33 (num -> INTEGER .)
+    COMMA           reduce using rule 33 (num -> INTEGER .)
+    COLON           reduce using rule 33 (num -> INTEGER .)
+    R_AND           reduce using rule 33 (num -> INTEGER .)
+    R_NOT           reduce using rule 33 (num -> INTEGER .)
+    R_OR            reduce using rule 33 (num -> INTEGER .)
+
+
+state 29
+
+    (34) num -> FLOAT .
+
+    PLUS            reduce using rule 34 (num -> FLOAT .)
+    MINUS           reduce using rule 34 (num -> FLOAT .)
+    MULTIPLY        reduce using rule 34 (num -> FLOAT .)
+    DIVIDE          reduce using rule 34 (num -> FLOAT .)
+    MOD             reduce using rule 34 (num -> FLOAT .)
+    NEWLINE         reduce using rule 34 (num -> FLOAT .)
+    ID              reduce using rule 34 (num -> FLOAT .)
+    R_DEF           reduce using rule 34 (num -> FLOAT .)
+    R_RETURN        reduce using rule 34 (num -> FLOAT .)
+    R_IF            reduce using rule 34 (num -> FLOAT .)
+    R_WHILE         reduce using rule 34 (num -> FLOAT .)
+    $end            reduce using rule 34 (num -> FLOAT .)
+    RPAREN          reduce using rule 34 (num -> FLOAT .)
+    COMMA           reduce using rule 34 (num -> FLOAT .)
+    COLON           reduce using rule 34 (num -> FLOAT .)
+    R_AND           reduce using rule 34 (num -> FLOAT .)
+    R_NOT           reduce using rule 34 (num -> FLOAT .)
+    R_OR            reduce using rule 34 (num -> FLOAT .)
+
+
+state 30
+
+    (40) decision -> R_IF condition . COLON LPAREN program RPAREN
+    (45) condition -> condition . condexpend condition
+    (48) condexpend -> . R_AND
+    (49) condexpend -> . R_NOT
+    (50) condexpend -> . R_OR
+
+    COLON           shift and go to state 47
+    R_AND           shift and go to state 49
+    R_NOT           shift and go to state 50
+    R_OR            shift and go to state 51
+
+    condexpend                     shift and go to state 48
+
+state 31
+
+    (44) condition -> LPAREN . condition RPAREN
+    (42) condition -> . BOOL
+    (43) condition -> . ID condopt value
+    (44) condition -> . LPAREN condition RPAREN
+    (45) condition -> . condition condexpend condition
+
+    BOOL            shift and go to state 32
+    ID              shift and go to state 33
+    LPAREN          shift and go to state 31
+
+    condition                      shift and go to state 52
+
+state 32
+
+    (42) condition -> BOOL .
+
+    COLON           reduce using rule 42 (condition -> BOOL .)
+    R_AND           reduce using rule 42 (condition -> BOOL .)
+    R_NOT           reduce using rule 42 (condition -> BOOL .)
+    R_OR            reduce using rule 42 (condition -> BOOL .)
+    RPAREN          reduce using rule 42 (condition -> BOOL .)
+
+
+state 33
+
+    (43) condition -> ID . condopt value
+    (46) condopt -> . EQUAL
+    (47) condopt -> . NOTEQUAL
+
+    EQUAL           shift and go to state 54
+    NOTEQUAL        shift and go to state 55
+
+    condopt                        shift and go to state 53
+
+state 34
+
+    (41) loop -> R_WHILE condition . COLON LPAREN program RPAREN
+    (45) condition -> condition . condexpend condition
+    (48) condexpend -> . R_AND
+    (49) condexpend -> . R_NOT
+    (50) condexpend -> . R_OR
+
+    COLON           shift and go to state 56
+    R_AND           shift and go to state 49
+    R_NOT           shift and go to state 50
+    R_OR            shift and go to state 51
+
+    condexpend                     shift and go to state 48
+
+state 35
+
+    (11) assignment -> ID ASSIGN idexpr .
+
+    NEWLINE         reduce using rule 11 (assignment -> ID ASSIGN idexpr .)
+    ID              reduce using rule 11 (assignment -> ID ASSIGN idexpr .)
+    R_DEF           reduce using rule 11 (assignment -> ID ASSIGN idexpr .)
+    R_RETURN        reduce using rule 11 (assignment -> ID ASSIGN idexpr .)
+    R_IF            reduce using rule 11 (assignment -> ID ASSIGN idexpr .)
+    R_WHILE         reduce using rule 11 (assignment -> ID ASSIGN idexpr .)
+    $end            reduce using rule 11 (assignment -> ID ASSIGN idexpr .)
+    RPAREN          reduce using rule 11 (assignment -> ID ASSIGN idexpr .)
+
+
+state 36
+
+    (13) idexpr -> value . mathopt idexpr
+    (14) idexpr -> value .
+    (35) mathopt -> . PLUS
+    (36) mathopt -> . MINUS
+    (37) mathopt -> . MULTIPLY
+    (38) mathopt -> . DIVIDE
+    (39) mathopt -> . MOD
+
+    NEWLINE         reduce using rule 14 (idexpr -> value .)
+    ID              reduce using rule 14 (idexpr -> value .)
+    R_DEF           reduce using rule 14 (idexpr -> value .)
+    R_RETURN        reduce using rule 14 (idexpr -> value .)
+    R_IF            reduce using rule 14 (idexpr -> value .)
+    R_WHILE         reduce using rule 14 (idexpr -> value .)
+    $end            reduce using rule 14 (idexpr -> value .)
+    RPAREN          reduce using rule 14 (idexpr -> value .)
+    PLUS            shift and go to state 42
+    MINUS           shift and go to state 43
+    MULTIPLY        shift and go to state 44
+    DIVIDE          shift and go to state 45
+    MOD             shift and go to state 46
+
+    mathopt                        shift and go to state 57
+
+state 37
+
+    (24) methodcall -> ID LPAREN callargs . RPAREN
+    (25) callargs -> callargs . COMMA callargs
+
+    RPAREN          shift and go to state 58
+    COMMA           shift and go to state 59
+
+
+state 38
+
+    (26) callargs -> value .
+
+    RPAREN          reduce using rule 26 (callargs -> value .)
+    COMMA           reduce using rule 26 (callargs -> value .)
+
+
+state 39
+
+    (20) declaration -> R_DEF ID LPAREN . args RPAREN COLON LPAREN program RPAREN
+    (21) args -> . args COMMA args
+    (22) args -> . ID
+    (23) args -> .
+
+    ID              shift and go to state 60
+    RPAREN          reduce using rule 23 (args -> .)
+    COMMA           reduce using rule 23 (args -> .)
+
+    args                           shift and go to state 61
+
+state 40
+
+    (30) expression -> LPAREN expression . RPAREN
+
+    RPAREN          shift and go to state 62
+
+
+state 41
+
+    (31) expression -> num mathopt . expression
+    (30) expression -> . LPAREN expression RPAREN
+    (31) expression -> . num mathopt expression
+    (32) expression -> . num
+    (33) num -> . INTEGER
+    (34) num -> . FLOAT
+
+    LPAREN          shift and go to state 26
+    INTEGER         shift and go to state 28
+    FLOAT           shift and go to state 29
+
+    num                            shift and go to state 27
+    expression                     shift and go to state 63
+
+state 42
+
+    (35) mathopt -> PLUS .
+
+    LPAREN          reduce using rule 35 (mathopt -> PLUS .)
+    INTEGER         reduce using rule 35 (mathopt -> PLUS .)
+    FLOAT           reduce using rule 35 (mathopt -> PLUS .)
+    ID              reduce using rule 35 (mathopt -> PLUS .)
+    BOOL            reduce using rule 35 (mathopt -> PLUS .)
+    STRING          reduce using rule 35 (mathopt -> PLUS .)
+
+
+state 43
+
+    (36) mathopt -> MINUS .
+
+    LPAREN          reduce using rule 36 (mathopt -> MINUS .)
+    INTEGER         reduce using rule 36 (mathopt -> MINUS .)
+    FLOAT           reduce using rule 36 (mathopt -> MINUS .)
+    ID              reduce using rule 36 (mathopt -> MINUS .)
+    BOOL            reduce using rule 36 (mathopt -> MINUS .)
+    STRING          reduce using rule 36 (mathopt -> MINUS .)
+
+
+state 44
+
+    (37) mathopt -> MULTIPLY .
+
+    LPAREN          reduce using rule 37 (mathopt -> MULTIPLY .)
+    INTEGER         reduce using rule 37 (mathopt -> MULTIPLY .)
+    FLOAT           reduce using rule 37 (mathopt -> MULTIPLY .)
+    ID              reduce using rule 37 (mathopt -> MULTIPLY .)
+    BOOL            reduce using rule 37 (mathopt -> MULTIPLY .)
+    STRING          reduce using rule 37 (mathopt -> MULTIPLY .)
+
+
+state 45
+
+    (38) mathopt -> DIVIDE .
+
+    LPAREN          reduce using rule 38 (mathopt -> DIVIDE .)
+    INTEGER         reduce using rule 38 (mathopt -> DIVIDE .)
+    FLOAT           reduce using rule 38 (mathopt -> DIVIDE .)
+    ID              reduce using rule 38 (mathopt -> DIVIDE .)
+    BOOL            reduce using rule 38 (mathopt -> DIVIDE .)
+    STRING          reduce using rule 38 (mathopt -> DIVIDE .)
+
+
+state 46
+
+    (39) mathopt -> MOD .
+
+    LPAREN          reduce using rule 39 (mathopt -> MOD .)
+    INTEGER         reduce using rule 39 (mathopt -> MOD .)
+    FLOAT           reduce using rule 39 (mathopt -> MOD .)
+    ID              reduce using rule 39 (mathopt -> MOD .)
+    BOOL            reduce using rule 39 (mathopt -> MOD .)
+    STRING          reduce using rule 39 (mathopt -> MOD .)
+
+
+state 47
+
+    (40) decision -> R_IF condition COLON . LPAREN program RPAREN
+
+    LPAREN          shift and go to state 64
+
+
+state 48
+
+    (45) condition -> condition condexpend . condition
+    (42) condition -> . BOOL
+    (43) condition -> . ID condopt value
+    (44) condition -> . LPAREN condition RPAREN
+    (45) condition -> . condition condexpend condition
+
+    BOOL            shift and go to state 32
+    ID              shift and go to state 33
+    LPAREN          shift and go to state 31
+
+    condition                      shift and go to state 65
+
+state 49
+
+    (48) condexpend -> R_AND .
+
+    BOOL            reduce using rule 48 (condexpend -> R_AND .)
+    ID              reduce using rule 48 (condexpend -> R_AND .)
+    LPAREN          reduce using rule 48 (condexpend -> R_AND .)
+
+
+state 50
+
+    (49) condexpend -> R_NOT .
+
+    BOOL            reduce using rule 49 (condexpend -> R_NOT .)
+    ID              reduce using rule 49 (condexpend -> R_NOT .)
+    LPAREN          reduce using rule 49 (condexpend -> R_NOT .)
+
+
+state 51
+
+    (50) condexpend -> R_OR .
+
+    BOOL            reduce using rule 50 (condexpend -> R_OR .)
+    ID              reduce using rule 50 (condexpend -> R_OR .)
+    LPAREN          reduce using rule 50 (condexpend -> R_OR .)
+
+
+state 52
+
+    (44) condition -> LPAREN condition . RPAREN
+    (45) condition -> condition . condexpend condition
+    (48) condexpend -> . R_AND
+    (49) condexpend -> . R_NOT
+    (50) condexpend -> . R_OR
+
+    RPAREN          shift and go to state 66
+    R_AND           shift and go to state 49
+    R_NOT           shift and go to state 50
+    R_OR            shift and go to state 51
+
+    condexpend                     shift and go to state 48
+
+state 53
+
+    (43) condition -> ID condopt . value
+    (15) value -> . ID
+    (16) value -> . BOOL
+    (17) value -> . STRING
+    (18) value -> . expression
+    (19) value -> . methodcall
+    (30) expression -> . LPAREN expression RPAREN
+    (31) expression -> . num mathopt expression
+    (32) expression -> . num
+    (24) methodcall -> . ID LPAREN callargs RPAREN
+    (33) num -> . INTEGER
+    (34) num -> . FLOAT
+
+    ID              shift and go to state 21
+    BOOL            shift and go to state 22
+    STRING          shift and go to state 23
+    LPAREN          shift and go to state 26
+    INTEGER         shift and go to state 28
+    FLOAT           shift and go to state 29
+
+    value                          shift and go to state 67
+    expression                     shift and go to state 24
+    methodcall                     shift and go to state 25
+    num                            shift and go to state 27
+
+state 54
+
+    (46) condopt -> EQUAL .
+
+    ID              reduce using rule 46 (condopt -> EQUAL .)
+    BOOL            reduce using rule 46 (condopt -> EQUAL .)
+    STRING          reduce using rule 46 (condopt -> EQUAL .)
+    LPAREN          reduce using rule 46 (condopt -> EQUAL .)
+    INTEGER         reduce using rule 46 (condopt -> EQUAL .)
+    FLOAT           reduce using rule 46 (condopt -> EQUAL .)
+
+
+state 55
+
+    (47) condopt -> NOTEQUAL .
+
+    ID              reduce using rule 47 (condopt -> NOTEQUAL .)
+    BOOL            reduce using rule 47 (condopt -> NOTEQUAL .)
+    STRING          reduce using rule 47 (condopt -> NOTEQUAL .)
+    LPAREN          reduce using rule 47 (condopt -> NOTEQUAL .)
+    INTEGER         reduce using rule 47 (condopt -> NOTEQUAL .)
+    FLOAT           reduce using rule 47 (condopt -> NOTEQUAL .)
+
+
+state 56
+
+    (41) loop -> R_WHILE condition COLON . LPAREN program RPAREN
+
+    LPAREN          shift and go to state 68
+
+
+state 57
+
+    (13) idexpr -> value mathopt . idexpr
+    (13) idexpr -> . value mathopt idexpr
+    (14) idexpr -> . value
+    (15) value -> . ID
+    (16) value -> . BOOL
+    (17) value -> . STRING
+    (18) value -> . expression
+    (19) value -> . methodcall
+    (30) expression -> . LPAREN expression RPAREN
+    (31) expression -> . num mathopt expression
+    (32) expression -> . num
+    (24) methodcall -> . ID LPAREN callargs RPAREN
+    (33) num -> . INTEGER
+    (34) num -> . FLOAT
+
+    ID              shift and go to state 21
+    BOOL            shift and go to state 22
+    STRING          shift and go to state 23
+    LPAREN          shift and go to state 26
+    INTEGER         shift and go to state 28
+    FLOAT           shift and go to state 29
+
+    value                          shift and go to state 36
+    idexpr                         shift and go to state 69
+    expression                     shift and go to state 24
+    methodcall                     shift and go to state 25
+    num                            shift and go to state 27
+
+state 58
+
+    (24) methodcall -> ID LPAREN callargs RPAREN .
+
+    NEWLINE         reduce using rule 24 (methodcall -> ID LPAREN callargs RPAREN .)
+    ID              reduce using rule 24 (methodcall -> ID LPAREN callargs RPAREN .)
+    R_DEF           reduce using rule 24 (methodcall -> ID LPAREN callargs RPAREN .)
+    R_RETURN        reduce using rule 24 (methodcall -> ID LPAREN callargs RPAREN .)
+    R_IF            reduce using rule 24 (methodcall -> ID LPAREN callargs RPAREN .)
+    R_WHILE         reduce using rule 24 (methodcall -> ID LPAREN callargs RPAREN .)
+    $end            reduce using rule 24 (methodcall -> ID LPAREN callargs RPAREN .)
+    RPAREN          reduce using rule 24 (methodcall -> ID LPAREN callargs RPAREN .)
+    PLUS            reduce using rule 24 (methodcall -> ID LPAREN callargs RPAREN .)
+    MINUS           reduce using rule 24 (methodcall -> ID LPAREN callargs RPAREN .)
+    MULTIPLY        reduce using rule 24 (methodcall -> ID LPAREN callargs RPAREN .)
+    DIVIDE          reduce using rule 24 (methodcall -> ID LPAREN callargs RPAREN .)
+    MOD             reduce using rule 24 (methodcall -> ID LPAREN callargs RPAREN .)
+    COMMA           reduce using rule 24 (methodcall -> ID LPAREN callargs RPAREN .)
+    COLON           reduce using rule 24 (methodcall -> ID LPAREN callargs RPAREN .)
+    R_AND           reduce using rule 24 (methodcall -> ID LPAREN callargs RPAREN .)
+    R_NOT           reduce using rule 24 (methodcall -> ID LPAREN callargs RPAREN .)
+    R_OR            reduce using rule 24 (methodcall -> ID LPAREN callargs RPAREN .)
+
+
+state 59
+
+    (25) callargs -> callargs COMMA . callargs
+    (25) callargs -> . callargs COMMA callargs
+    (26) callargs -> . value
+    (27) callargs -> .
+    (15) value -> . ID
+    (16) value -> . BOOL
+    (17) value -> . STRING
+    (18) value -> . expression
+    (19) value -> . methodcall
+    (30) expression -> . LPAREN expression RPAREN
+    (31) expression -> . num mathopt expression
+    (32) expression -> . num
+    (24) methodcall -> . ID LPAREN callargs RPAREN
+    (33) num -> . INTEGER
+    (34) num -> . FLOAT
+
+    COMMA           reduce using rule 27 (callargs -> .)
+    RPAREN          reduce using rule 27 (callargs -> .)
+    ID              shift and go to state 21
+    BOOL            shift and go to state 22
+    STRING          shift and go to state 23
+    LPAREN          shift and go to state 26
+    INTEGER         shift and go to state 28
+    FLOAT           shift and go to state 29
+
+    callargs                       shift and go to state 70
+    value                          shift and go to state 38
+    expression                     shift and go to state 24
+    methodcall                     shift and go to state 25
+    num                            shift and go to state 27
+
+state 60
+
+    (22) args -> ID .
+
+    RPAREN          reduce using rule 22 (args -> ID .)
+    COMMA           reduce using rule 22 (args -> ID .)
+
+
+state 61
+
+    (20) declaration -> R_DEF ID LPAREN args . RPAREN COLON LPAREN program RPAREN
+    (21) args -> args . COMMA args
+
+    RPAREN          shift and go to state 71
+    COMMA           shift and go to state 72
+
+
+state 62
+
+    (30) expression -> LPAREN expression RPAREN .
+
+    NEWLINE         reduce using rule 30 (expression -> LPAREN expression RPAREN .)
+    ID              reduce using rule 30 (expression -> LPAREN expression RPAREN .)
+    R_DEF           reduce using rule 30 (expression -> LPAREN expression RPAREN .)
+    R_RETURN        reduce using rule 30 (expression -> LPAREN expression RPAREN .)
+    R_IF            reduce using rule 30 (expression -> LPAREN expression RPAREN .)
+    R_WHILE         reduce using rule 30 (expression -> LPAREN expression RPAREN .)
+    $end            reduce using rule 30 (expression -> LPAREN expression RPAREN .)
+    RPAREN          reduce using rule 30 (expression -> LPAREN expression RPAREN .)
+    PLUS            reduce using rule 30 (expression -> LPAREN expression RPAREN .)
+    MINUS           reduce using rule 30 (expression -> LPAREN expression RPAREN .)
+    MULTIPLY        reduce using rule 30 (expression -> LPAREN expression RPAREN .)
+    DIVIDE          reduce using rule 30 (expression -> LPAREN expression RPAREN .)
+    MOD             reduce using rule 30 (expression -> LPAREN expression RPAREN .)
+    COMMA           reduce using rule 30 (expression -> LPAREN expression RPAREN .)
+    COLON           reduce using rule 30 (expression -> LPAREN expression RPAREN .)
+    R_AND           reduce using rule 30 (expression -> LPAREN expression RPAREN .)
+    R_NOT           reduce using rule 30 (expression -> LPAREN expression RPAREN .)
+    R_OR            reduce using rule 30 (expression -> LPAREN expression RPAREN .)
+
+
+state 63
+
+    (31) expression -> num mathopt expression .
+
+    NEWLINE         reduce using rule 31 (expression -> num mathopt expression .)
+    ID              reduce using rule 31 (expression -> num mathopt expression .)
+    R_DEF           reduce using rule 31 (expression -> num mathopt expression .)
+    R_RETURN        reduce using rule 31 (expression -> num mathopt expression .)
+    R_IF            reduce using rule 31 (expression -> num mathopt expression .)
+    R_WHILE         reduce using rule 31 (expression -> num mathopt expression .)
+    $end            reduce using rule 31 (expression -> num mathopt expression .)
+    RPAREN          reduce using rule 31 (expression -> num mathopt expression .)
+    PLUS            reduce using rule 31 (expression -> num mathopt expression .)
+    MINUS           reduce using rule 31 (expression -> num mathopt expression .)
+    MULTIPLY        reduce using rule 31 (expression -> num mathopt expression .)
+    DIVIDE          reduce using rule 31 (expression -> num mathopt expression .)
+    MOD             reduce using rule 31 (expression -> num mathopt expression .)
+    COMMA           reduce using rule 31 (expression -> num mathopt expression .)
+    COLON           reduce using rule 31 (expression -> num mathopt expression .)
+    R_AND           reduce using rule 31 (expression -> num mathopt expression .)
+    R_NOT           reduce using rule 31 (expression -> num mathopt expression .)
+    R_OR            reduce using rule 31 (expression -> num mathopt expression .)
+
+
+state 64
+
+    (40) decision -> R_IF condition COLON LPAREN . program RPAREN
+    (2) program -> . line program
+    (3) program -> .
+    (4) line -> . NEWLINE
+    (5) line -> . assignment
+    (6) line -> . declaration
+    (7) line -> . methodcall
+    (8) line -> . returnfunc
+    (9) line -> . decision
+    (10) line -> . loop
+    (11) assignment -> . ID ASSIGN idexpr
+    (12) assignment -> . ID
+    (20) declaration -> . R_DEF ID LPAREN args RPAREN COLON LPAREN program RPAREN
+    (24) methodcall -> . ID LPAREN callargs RPAREN
+    (28) returnfunc -> . R_RETURN
+    (29) returnfunc -> . R_RETURN value
+    (40) decision -> . R_IF condition COLON LPAREN program RPAREN
+    (41) loop -> . R_WHILE condition COLON LPAREN program RPAREN
+
+    RPAREN          reduce using rule 3 (program -> .)
+    NEWLINE         shift and go to state 4
+    ID              shift and go to state 11
+    R_DEF           shift and go to state 12
+    R_RETURN        shift and go to state 13
+    R_IF            shift and go to state 14
+    R_WHILE         shift and go to state 15
+
+    program                        shift and go to state 73
+    line                           shift and go to state 3
+    assignment                     shift and go to state 5
+    declaration                    shift and go to state 6
+    methodcall                     shift and go to state 7
+    returnfunc                     shift and go to state 8
+    decision                       shift and go to state 9
+    loop                           shift and go to state 10
+
+state 65
+
+    (45) condition -> condition condexpend condition .
+    (45) condition -> condition . condexpend condition
+    (48) condexpend -> . R_AND
+    (49) condexpend -> . R_NOT
+    (50) condexpend -> . R_OR
+
+  ! shift/reduce conflict for R_AND resolved as shift
+  ! shift/reduce conflict for R_NOT resolved as shift
+  ! shift/reduce conflict for R_OR resolved as shift
+    COLON           reduce using rule 45 (condition -> condition condexpend condition .)
+    RPAREN          reduce using rule 45 (condition -> condition condexpend condition .)
+    R_AND           shift and go to state 49
+    R_NOT           shift and go to state 50
+    R_OR            shift and go to state 51
+
+  ! R_AND           [ reduce using rule 45 (condition -> condition condexpend condition .) ]
+  ! R_NOT           [ reduce using rule 45 (condition -> condition condexpend condition .) ]
+  ! R_OR            [ reduce using rule 45 (condition -> condition condexpend condition .) ]
+
+    condexpend                     shift and go to state 48
+
+state 66
+
+    (44) condition -> LPAREN condition RPAREN .
+
+    COLON           reduce using rule 44 (condition -> LPAREN condition RPAREN .)
+    R_AND           reduce using rule 44 (condition -> LPAREN condition RPAREN .)
+    R_NOT           reduce using rule 44 (condition -> LPAREN condition RPAREN .)
+    R_OR            reduce using rule 44 (condition -> LPAREN condition RPAREN .)
+    RPAREN          reduce using rule 44 (condition -> LPAREN condition RPAREN .)
+
+
+state 67
+
+    (43) condition -> ID condopt value .
+
+    COLON           reduce using rule 43 (condition -> ID condopt value .)
+    R_AND           reduce using rule 43 (condition -> ID condopt value .)
+    R_NOT           reduce using rule 43 (condition -> ID condopt value .)
+    R_OR            reduce using rule 43 (condition -> ID condopt value .)
+    RPAREN          reduce using rule 43 (condition -> ID condopt value .)
+
+
+state 68
+
+    (41) loop -> R_WHILE condition COLON LPAREN . program RPAREN
+    (2) program -> . line program
+    (3) program -> .
+    (4) line -> . NEWLINE
+    (5) line -> . assignment
+    (6) line -> . declaration
+    (7) line -> . methodcall
+    (8) line -> . returnfunc
+    (9) line -> . decision
+    (10) line -> . loop
+    (11) assignment -> . ID ASSIGN idexpr
+    (12) assignment -> . ID
+    (20) declaration -> . R_DEF ID LPAREN args RPAREN COLON LPAREN program RPAREN
+    (24) methodcall -> . ID LPAREN callargs RPAREN
+    (28) returnfunc -> . R_RETURN
+    (29) returnfunc -> . R_RETURN value
+    (40) decision -> . R_IF condition COLON LPAREN program RPAREN
+    (41) loop -> . R_WHILE condition COLON LPAREN program RPAREN
+
+    RPAREN          reduce using rule 3 (program -> .)
+    NEWLINE         shift and go to state 4
+    ID              shift and go to state 11
+    R_DEF           shift and go to state 12
+    R_RETURN        shift and go to state 13
+    R_IF            shift and go to state 14
+    R_WHILE         shift and go to state 15
+
+    program                        shift and go to state 74
+    line                           shift and go to state 3
+    assignment                     shift and go to state 5
+    declaration                    shift and go to state 6
+    methodcall                     shift and go to state 7
+    returnfunc                     shift and go to state 8
+    decision                       shift and go to state 9
+    loop                           shift and go to state 10
+
+state 69
+
+    (13) idexpr -> value mathopt idexpr .
+
+    NEWLINE         reduce using rule 13 (idexpr -> value mathopt idexpr .)
+    ID              reduce using rule 13 (idexpr -> value mathopt idexpr .)
+    R_DEF           reduce using rule 13 (idexpr -> value mathopt idexpr .)
+    R_RETURN        reduce using rule 13 (idexpr -> value mathopt idexpr .)
+    R_IF            reduce using rule 13 (idexpr -> value mathopt idexpr .)
+    R_WHILE         reduce using rule 13 (idexpr -> value mathopt idexpr .)
+    $end            reduce using rule 13 (idexpr -> value mathopt idexpr .)
+    RPAREN          reduce using rule 13 (idexpr -> value mathopt idexpr .)
+
+
+state 70
+
+    (25) callargs -> callargs COMMA callargs .
+    (25) callargs -> callargs . COMMA callargs
+
+  ! shift/reduce conflict for COMMA resolved as shift
+    RPAREN          reduce using rule 25 (callargs -> callargs COMMA callargs .)
+    COMMA           shift and go to state 59
+
+  ! COMMA           [ reduce using rule 25 (callargs -> callargs COMMA callargs .) ]
+
+
+state 71
+
+    (20) declaration -> R_DEF ID LPAREN args RPAREN . COLON LPAREN program RPAREN
+
+    COLON           shift and go to state 75
+
+
+state 72
+
+    (21) args -> args COMMA . args
+    (21) args -> . args COMMA args
+    (22) args -> . ID
+    (23) args -> .
+
+    ID              shift and go to state 60
+    COMMA           reduce using rule 23 (args -> .)
+    RPAREN          reduce using rule 23 (args -> .)
+
+    args                           shift and go to state 76
+
+state 73
+
+    (40) decision -> R_IF condition COLON LPAREN program . RPAREN
+
+    RPAREN          shift and go to state 77
+
+
+state 74
+
+    (41) loop -> R_WHILE condition COLON LPAREN program . RPAREN
+
+    RPAREN          shift and go to state 78
+
+
+state 75
+
+    (20) declaration -> R_DEF ID LPAREN args RPAREN COLON . LPAREN program RPAREN
+
+    LPAREN          shift and go to state 79
+
+
+state 76
+
+    (21) args -> args COMMA args .
+    (21) args -> args . COMMA args
+
+  ! shift/reduce conflict for COMMA resolved as shift
+    RPAREN          reduce using rule 21 (args -> args COMMA args .)
+    COMMA           shift and go to state 72
+
+  ! COMMA           [ reduce using rule 21 (args -> args COMMA args .) ]
+
+
+state 77
+
+    (40) decision -> R_IF condition COLON LPAREN program RPAREN .
+
+    NEWLINE         reduce using rule 40 (decision -> R_IF condition COLON LPAREN program RPAREN .)
+    ID              reduce using rule 40 (decision -> R_IF condition COLON LPAREN program RPAREN .)
+    R_DEF           reduce using rule 40 (decision -> R_IF condition COLON LPAREN program RPAREN .)
+    R_RETURN        reduce using rule 40 (decision -> R_IF condition COLON LPAREN program RPAREN .)
+    R_IF            reduce using rule 40 (decision -> R_IF condition COLON LPAREN program RPAREN .)
+    R_WHILE         reduce using rule 40 (decision -> R_IF condition COLON LPAREN program RPAREN .)
+    $end            reduce using rule 40 (decision -> R_IF condition COLON LPAREN program RPAREN .)
+    RPAREN          reduce using rule 40 (decision -> R_IF condition COLON LPAREN program RPAREN .)
+
+
+state 78
+
+    (41) loop -> R_WHILE condition COLON LPAREN program RPAREN .
+
+    NEWLINE         reduce using rule 41 (loop -> R_WHILE condition COLON LPAREN program RPAREN .)
+    ID              reduce using rule 41 (loop -> R_WHILE condition COLON LPAREN program RPAREN .)
+    R_DEF           reduce using rule 41 (loop -> R_WHILE condition COLON LPAREN program RPAREN .)
+    R_RETURN        reduce using rule 41 (loop -> R_WHILE condition COLON LPAREN program RPAREN .)
+    R_IF            reduce using rule 41 (loop -> R_WHILE condition COLON LPAREN program RPAREN .)
+    R_WHILE         reduce using rule 41 (loop -> R_WHILE condition COLON LPAREN program RPAREN .)
+    $end            reduce using rule 41 (loop -> R_WHILE condition COLON LPAREN program RPAREN .)
+    RPAREN          reduce using rule 41 (loop -> R_WHILE condition COLON LPAREN program RPAREN .)
+
+
+state 79
+
+    (20) declaration -> R_DEF ID LPAREN args RPAREN COLON LPAREN . program RPAREN
+    (2) program -> . line program
+    (3) program -> .
+    (4) line -> . NEWLINE
+    (5) line -> . assignment
+    (6) line -> . declaration
+    (7) line -> . methodcall
+    (8) line -> . returnfunc
+    (9) line -> . decision
+    (10) line -> . loop
+    (11) assignment -> . ID ASSIGN idexpr
+    (12) assignment -> . ID
+    (20) declaration -> . R_DEF ID LPAREN args RPAREN COLON LPAREN program RPAREN
+    (24) methodcall -> . ID LPAREN callargs RPAREN
+    (28) returnfunc -> . R_RETURN
+    (29) returnfunc -> . R_RETURN value
+    (40) decision -> . R_IF condition COLON LPAREN program RPAREN
+    (41) loop -> . R_WHILE condition COLON LPAREN program RPAREN
+
+    RPAREN          reduce using rule 3 (program -> .)
+    NEWLINE         shift and go to state 4
+    ID              shift and go to state 11
+    R_DEF           shift and go to state 12
+    R_RETURN        shift and go to state 13
+    R_IF            shift and go to state 14
+    R_WHILE         shift and go to state 15
+
+    program                        shift and go to state 80
+    line                           shift and go to state 3
+    assignment                     shift and go to state 5
+    declaration                    shift and go to state 6
+    methodcall                     shift and go to state 7
+    returnfunc                     shift and go to state 8
+    decision                       shift and go to state 9
+    loop                           shift and go to state 10
+
+state 80
+
+    (20) declaration -> R_DEF ID LPAREN args RPAREN COLON LPAREN program . RPAREN
+
+    RPAREN          shift and go to state 81
+
+
+state 81
+
+    (20) declaration -> R_DEF ID LPAREN args RPAREN COLON LPAREN program RPAREN .
+
+    NEWLINE         reduce using rule 20 (declaration -> R_DEF ID LPAREN args RPAREN COLON LPAREN program RPAREN .)
+    ID              reduce using rule 20 (declaration -> R_DEF ID LPAREN args RPAREN COLON LPAREN program RPAREN .)
+    R_DEF           reduce using rule 20 (declaration -> R_DEF ID LPAREN args RPAREN COLON LPAREN program RPAREN .)
+    R_RETURN        reduce using rule 20 (declaration -> R_DEF ID LPAREN args RPAREN COLON LPAREN program RPAREN .)
+    R_IF            reduce using rule 20 (declaration -> R_DEF ID LPAREN args RPAREN COLON LPAREN program RPAREN .)
+    R_WHILE         reduce using rule 20 (declaration -> R_DEF ID LPAREN args RPAREN COLON LPAREN program RPAREN .)
+    $end            reduce using rule 20 (declaration -> R_DEF ID LPAREN args RPAREN COLON LPAREN program RPAREN .)
+    RPAREN          reduce using rule 20 (declaration -> R_DEF ID LPAREN args RPAREN COLON LPAREN program RPAREN .)
 
 WARNING: 
 WARNING: Conflicts:
 WARNING: 
-WARNING: shift/reduce conflict for MOD in state 16 resolved as shift
-WARNING: shift/reduce conflict for PLUS in state 16 resolved as shift
-WARNING: shift/reduce conflict for MINUS in state 16 resolved as shift
-WARNING: shift/reduce conflict for DIVIDE in state 16 resolved as shift
-WARNING: shift/reduce conflict for MULTIPLY in state 16 resolved as shift
+WARNING: shift/reduce conflict for ID in state 13 resolved as shift
+WARNING: shift/reduce conflict for PLUS in state 27 resolved as shift
+WARNING: shift/reduce conflict for MINUS in state 27 resolved as shift
+WARNING: shift/reduce conflict for MULTIPLY in state 27 resolved as shift
+WARNING: shift/reduce conflict for DIVIDE in state 27 resolved as shift
+WARNING: shift/reduce conflict for MOD in state 27 resolved as shift
+WARNING: shift/reduce conflict for R_AND in state 65 resolved as shift
+WARNING: shift/reduce conflict for R_NOT in state 65 resolved as shift
+WARNING: shift/reduce conflict for R_OR in state 65 resolved as shift
+WARNING: shift/reduce conflict for COMMA in state 70 resolved as shift
+WARNING: shift/reduce conflict for COMMA in state 76 resolved as shift

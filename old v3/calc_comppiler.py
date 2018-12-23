@@ -60,22 +60,32 @@ precedence = (
 def p_0(t):
     '''
     sourcecode  : NEWLINE
+                | varcall
                 | assignment
+                |
     '''
 
 def p_1(t):
     '''
     assignment  : ID ASSIGN expression
-                | ID
     '''
-
-    if len(t) == 4:
+    try:
         var_table[t[1]] = int(t[3])
+    except Exception as e:
+        print("Error! Reading undefiend variable")
 
-    if len(t) == 2:
-        print(var_table[t[1]])
 
 def p_2(t):
+    '''
+    varcall     : ID
+    '''
+    if t[1] in var_table:
+        print(var_table[t[1]])
+    else:
+        print("Error! Reading undefiend variable")
+
+
+def p_3(t):
     '''
     expression  : LPAREN        expression  RPAREN
                 | expression    MOD         expression
@@ -85,14 +95,14 @@ def p_2(t):
                 | expression    MULTIPLY    expression
                 | NUM
                 | ID
-
-
     '''
+
     if len(t) == 2:
         if t[1] in var_table:
             t[0] = var_table[t[1]]
         else:
             t[0] = int(t[1])
+
 
     if len(t) == 4:
         if t[2] == '+':
@@ -112,6 +122,7 @@ def p_2(t):
 
         if t[1] == '(':
             t[0] = t[2]
+
 
 def p_error(t):
     if t:
