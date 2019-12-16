@@ -36,8 +36,8 @@ Rule 26    callargs -> value
 Rule 27    callargs -> <empty>
 Rule 28    returnfunc -> R_RETURN
 Rule 29    returnfunc -> R_RETURN value
-Rule 30    expression -> LPAREN expression RPAREN
-Rule 31    expression -> num mathopt expression
+Rule 30    expression -> expression mathopt expression
+Rule 31    expression -> LPAREN expression RPAREN
 Rule 32    expression -> num
 Rule 33    num -> INTEGER
 Rule 34    num -> FLOAT
@@ -69,14 +69,14 @@ EQUAL                : 46
 FLOAT                : 34
 ID                   : 11 12 15 20 22 24 43
 INTEGER              : 33
-LPAREN               : 20 20 24 30 40 41 44
+LPAREN               : 20 20 24 31 40 41 44
 MINUS                : 36
 MOD                  : 39
 MULTIPLY             : 37
 NEWLINE              : 4
 NOTEQUAL             : 47
 PLUS                 : 35
-RPAREN               : 20 20 24 30 40 41 44
+RPAREN               : 20 20 24 31 40 41 44
 R_AND                : 48
 R_DEF                : 20
 R_FOR                : 
@@ -98,13 +98,13 @@ condition            : 40 41 44 45 45
 condopt              : 43
 decision             : 9
 declaration          : 6
-expression           : 18 30 31
+expression           : 18 30 30 31
 idexpr               : 11 13
 line                 : 2
 loop                 : 10
-mathopt              : 13 31
+mathopt              : 13 30
 methodcall           : 7 19
-num                  : 31 32
+num                  : 32
 parsetree            : 0
 program              : 1 2 20 40 41
 returnfunc           : 8
@@ -336,8 +336,8 @@ state 13
     (17) value -> . STRING
     (18) value -> . expression
     (19) value -> . methodcall
-    (30) expression -> . LPAREN expression RPAREN
-    (31) expression -> . num mathopt expression
+    (30) expression -> . expression mathopt expression
+    (31) expression -> . LPAREN expression RPAREN
     (32) expression -> . num
     (24) methodcall -> . ID LPAREN callargs RPAREN
     (33) num -> . INTEGER
@@ -411,8 +411,8 @@ state 17
     (17) value -> . STRING
     (18) value -> . expression
     (19) value -> . methodcall
-    (30) expression -> . LPAREN expression RPAREN
-    (31) expression -> . num mathopt expression
+    (30) expression -> . expression mathopt expression
+    (31) expression -> . LPAREN expression RPAREN
     (32) expression -> . num
     (24) methodcall -> . ID LPAREN callargs RPAREN
     (33) num -> . INTEGER
@@ -442,8 +442,8 @@ state 18
     (17) value -> . STRING
     (18) value -> . expression
     (19) value -> . methodcall
-    (30) expression -> . LPAREN expression RPAREN
-    (31) expression -> . num mathopt expression
+    (30) expression -> . expression mathopt expression
+    (31) expression -> . LPAREN expression RPAREN
     (32) expression -> . num
     (24) methodcall -> . ID LPAREN callargs RPAREN
     (33) num -> . INTEGER
@@ -562,7 +562,18 @@ state 23
 state 24
 
     (18) value -> expression .
+    (30) expression -> expression . mathopt expression
+    (35) mathopt -> . PLUS
+    (36) mathopt -> . MINUS
+    (37) mathopt -> . MULTIPLY
+    (38) mathopt -> . DIVIDE
+    (39) mathopt -> . MOD
 
+  ! shift/reduce conflict for PLUS resolved as shift
+  ! shift/reduce conflict for MINUS resolved as shift
+  ! shift/reduce conflict for MULTIPLY resolved as shift
+  ! shift/reduce conflict for DIVIDE resolved as shift
+  ! shift/reduce conflict for MOD resolved as shift
     NEWLINE         reduce using rule 18 (value -> expression .)
     ID              reduce using rule 18 (value -> expression .)
     R_DEF           reduce using rule 18 (value -> expression .)
@@ -571,17 +582,24 @@ state 24
     R_WHILE         reduce using rule 18 (value -> expression .)
     $end            reduce using rule 18 (value -> expression .)
     RPAREN          reduce using rule 18 (value -> expression .)
-    PLUS            reduce using rule 18 (value -> expression .)
-    MINUS           reduce using rule 18 (value -> expression .)
-    MULTIPLY        reduce using rule 18 (value -> expression .)
-    DIVIDE          reduce using rule 18 (value -> expression .)
-    MOD             reduce using rule 18 (value -> expression .)
     COMMA           reduce using rule 18 (value -> expression .)
     COLON           reduce using rule 18 (value -> expression .)
     R_AND           reduce using rule 18 (value -> expression .)
     R_NOT           reduce using rule 18 (value -> expression .)
     R_OR            reduce using rule 18 (value -> expression .)
+    PLUS            shift and go to state 41
+    MINUS           shift and go to state 42
+    MULTIPLY        shift and go to state 43
+    DIVIDE          shift and go to state 44
+    MOD             shift and go to state 45
 
+  ! PLUS            [ reduce using rule 18 (value -> expression .) ]
+  ! MINUS           [ reduce using rule 18 (value -> expression .) ]
+  ! MULTIPLY        [ reduce using rule 18 (value -> expression .) ]
+  ! DIVIDE          [ reduce using rule 18 (value -> expression .) ]
+  ! MOD             [ reduce using rule 18 (value -> expression .) ]
+
+    mathopt                        shift and go to state 40
 
 state 25
 
@@ -609,9 +627,9 @@ state 25
 
 state 26
 
-    (30) expression -> LPAREN . expression RPAREN
-    (30) expression -> . LPAREN expression RPAREN
-    (31) expression -> . num mathopt expression
+    (31) expression -> LPAREN . expression RPAREN
+    (30) expression -> . expression mathopt expression
+    (31) expression -> . LPAREN expression RPAREN
     (32) expression -> . num
     (33) num -> . INTEGER
     (34) num -> . FLOAT
@@ -620,24 +638,18 @@ state 26
     INTEGER         shift and go to state 28
     FLOAT           shift and go to state 29
 
-    expression                     shift and go to state 40
+    expression                     shift and go to state 46
     num                            shift and go to state 27
 
 state 27
 
-    (31) expression -> num . mathopt expression
     (32) expression -> num .
-    (35) mathopt -> . PLUS
-    (36) mathopt -> . MINUS
-    (37) mathopt -> . MULTIPLY
-    (38) mathopt -> . DIVIDE
-    (39) mathopt -> . MOD
 
-  ! shift/reduce conflict for PLUS resolved as shift
-  ! shift/reduce conflict for MINUS resolved as shift
-  ! shift/reduce conflict for MULTIPLY resolved as shift
-  ! shift/reduce conflict for DIVIDE resolved as shift
-  ! shift/reduce conflict for MOD resolved as shift
+    PLUS            reduce using rule 32 (expression -> num .)
+    MINUS           reduce using rule 32 (expression -> num .)
+    MULTIPLY        reduce using rule 32 (expression -> num .)
+    DIVIDE          reduce using rule 32 (expression -> num .)
+    MOD             reduce using rule 32 (expression -> num .)
     NEWLINE         reduce using rule 32 (expression -> num .)
     ID              reduce using rule 32 (expression -> num .)
     R_DEF           reduce using rule 32 (expression -> num .)
@@ -651,19 +663,7 @@ state 27
     R_AND           reduce using rule 32 (expression -> num .)
     R_NOT           reduce using rule 32 (expression -> num .)
     R_OR            reduce using rule 32 (expression -> num .)
-    PLUS            shift and go to state 42
-    MINUS           shift and go to state 43
-    MULTIPLY        shift and go to state 44
-    DIVIDE          shift and go to state 45
-    MOD             shift and go to state 46
 
-  ! PLUS            [ reduce using rule 32 (expression -> num .) ]
-  ! MINUS           [ reduce using rule 32 (expression -> num .) ]
-  ! MULTIPLY        [ reduce using rule 32 (expression -> num .) ]
-  ! DIVIDE          [ reduce using rule 32 (expression -> num .) ]
-  ! MOD             [ reduce using rule 32 (expression -> num .) ]
-
-    mathopt                        shift and go to state 41
 
 state 28
 
@@ -811,11 +811,11 @@ state 36
     R_WHILE         reduce using rule 14 (idexpr -> value .)
     $end            reduce using rule 14 (idexpr -> value .)
     RPAREN          reduce using rule 14 (idexpr -> value .)
-    PLUS            shift and go to state 42
-    MINUS           shift and go to state 43
-    MULTIPLY        shift and go to state 44
-    DIVIDE          shift and go to state 45
-    MOD             shift and go to state 46
+    PLUS            shift and go to state 41
+    MINUS           shift and go to state 42
+    MULTIPLY        shift and go to state 43
+    DIVIDE          shift and go to state 44
+    MOD             shift and go to state 45
 
     mathopt                        shift and go to state 57
 
@@ -851,16 +851,9 @@ state 39
 
 state 40
 
-    (30) expression -> LPAREN expression . RPAREN
-
-    RPAREN          shift and go to state 62
-
-
-state 41
-
-    (31) expression -> num mathopt . expression
-    (30) expression -> . LPAREN expression RPAREN
-    (31) expression -> . num mathopt expression
+    (30) expression -> expression mathopt . expression
+    (30) expression -> . expression mathopt expression
+    (31) expression -> . LPAREN expression RPAREN
     (32) expression -> . num
     (33) num -> . INTEGER
     (34) num -> . FLOAT
@@ -869,10 +862,10 @@ state 41
     INTEGER         shift and go to state 28
     FLOAT           shift and go to state 29
 
+    expression                     shift and go to state 62
     num                            shift and go to state 27
-    expression                     shift and go to state 63
 
-state 42
+state 41
 
     (35) mathopt -> PLUS .
 
@@ -884,7 +877,7 @@ state 42
     STRING          reduce using rule 35 (mathopt -> PLUS .)
 
 
-state 43
+state 42
 
     (36) mathopt -> MINUS .
 
@@ -896,7 +889,7 @@ state 43
     STRING          reduce using rule 36 (mathopt -> MINUS .)
 
 
-state 44
+state 43
 
     (37) mathopt -> MULTIPLY .
 
@@ -908,7 +901,7 @@ state 44
     STRING          reduce using rule 37 (mathopt -> MULTIPLY .)
 
 
-state 45
+state 44
 
     (38) mathopt -> DIVIDE .
 
@@ -920,7 +913,7 @@ state 45
     STRING          reduce using rule 38 (mathopt -> DIVIDE .)
 
 
-state 46
+state 45
 
     (39) mathopt -> MOD .
 
@@ -931,6 +924,25 @@ state 46
     BOOL            reduce using rule 39 (mathopt -> MOD .)
     STRING          reduce using rule 39 (mathopt -> MOD .)
 
+
+state 46
+
+    (31) expression -> LPAREN expression . RPAREN
+    (30) expression -> expression . mathopt expression
+    (35) mathopt -> . PLUS
+    (36) mathopt -> . MINUS
+    (37) mathopt -> . MULTIPLY
+    (38) mathopt -> . DIVIDE
+    (39) mathopt -> . MOD
+
+    RPAREN          shift and go to state 63
+    PLUS            shift and go to state 41
+    MINUS           shift and go to state 42
+    MULTIPLY        shift and go to state 43
+    DIVIDE          shift and go to state 44
+    MOD             shift and go to state 45
+
+    mathopt                        shift and go to state 40
 
 state 47
 
@@ -1003,8 +1015,8 @@ state 53
     (17) value -> . STRING
     (18) value -> . expression
     (19) value -> . methodcall
-    (30) expression -> . LPAREN expression RPAREN
-    (31) expression -> . num mathopt expression
+    (30) expression -> . expression mathopt expression
+    (31) expression -> . LPAREN expression RPAREN
     (32) expression -> . num
     (24) methodcall -> . ID LPAREN callargs RPAREN
     (33) num -> . INTEGER
@@ -1063,8 +1075,8 @@ state 57
     (17) value -> . STRING
     (18) value -> . expression
     (19) value -> . methodcall
-    (30) expression -> . LPAREN expression RPAREN
-    (31) expression -> . num mathopt expression
+    (30) expression -> . expression mathopt expression
+    (31) expression -> . LPAREN expression RPAREN
     (32) expression -> . num
     (24) methodcall -> . ID LPAREN callargs RPAREN
     (33) num -> . INTEGER
@@ -1118,8 +1130,8 @@ state 59
     (17) value -> . STRING
     (18) value -> . expression
     (19) value -> . methodcall
-    (30) expression -> . LPAREN expression RPAREN
-    (31) expression -> . num mathopt expression
+    (30) expression -> . expression mathopt expression
+    (31) expression -> . LPAREN expression RPAREN
     (32) expression -> . num
     (24) methodcall -> . ID LPAREN callargs RPAREN
     (33) num -> . INTEGER
@@ -1159,50 +1171,68 @@ state 61
 
 state 62
 
-    (30) expression -> LPAREN expression RPAREN .
+    (30) expression -> expression mathopt expression .
+    (30) expression -> expression . mathopt expression
+    (35) mathopt -> . PLUS
+    (36) mathopt -> . MINUS
+    (37) mathopt -> . MULTIPLY
+    (38) mathopt -> . DIVIDE
+    (39) mathopt -> . MOD
 
-    NEWLINE         reduce using rule 30 (expression -> LPAREN expression RPAREN .)
-    ID              reduce using rule 30 (expression -> LPAREN expression RPAREN .)
-    R_DEF           reduce using rule 30 (expression -> LPAREN expression RPAREN .)
-    R_RETURN        reduce using rule 30 (expression -> LPAREN expression RPAREN .)
-    R_IF            reduce using rule 30 (expression -> LPAREN expression RPAREN .)
-    R_WHILE         reduce using rule 30 (expression -> LPAREN expression RPAREN .)
-    $end            reduce using rule 30 (expression -> LPAREN expression RPAREN .)
-    RPAREN          reduce using rule 30 (expression -> LPAREN expression RPAREN .)
-    PLUS            reduce using rule 30 (expression -> LPAREN expression RPAREN .)
-    MINUS           reduce using rule 30 (expression -> LPAREN expression RPAREN .)
-    MULTIPLY        reduce using rule 30 (expression -> LPAREN expression RPAREN .)
-    DIVIDE          reduce using rule 30 (expression -> LPAREN expression RPAREN .)
-    MOD             reduce using rule 30 (expression -> LPAREN expression RPAREN .)
-    COMMA           reduce using rule 30 (expression -> LPAREN expression RPAREN .)
-    COLON           reduce using rule 30 (expression -> LPAREN expression RPAREN .)
-    R_AND           reduce using rule 30 (expression -> LPAREN expression RPAREN .)
-    R_NOT           reduce using rule 30 (expression -> LPAREN expression RPAREN .)
-    R_OR            reduce using rule 30 (expression -> LPAREN expression RPAREN .)
+  ! shift/reduce conflict for PLUS resolved as shift
+  ! shift/reduce conflict for MINUS resolved as shift
+  ! shift/reduce conflict for MULTIPLY resolved as shift
+  ! shift/reduce conflict for DIVIDE resolved as shift
+  ! shift/reduce conflict for MOD resolved as shift
+    NEWLINE         reduce using rule 30 (expression -> expression mathopt expression .)
+    ID              reduce using rule 30 (expression -> expression mathopt expression .)
+    R_DEF           reduce using rule 30 (expression -> expression mathopt expression .)
+    R_RETURN        reduce using rule 30 (expression -> expression mathopt expression .)
+    R_IF            reduce using rule 30 (expression -> expression mathopt expression .)
+    R_WHILE         reduce using rule 30 (expression -> expression mathopt expression .)
+    $end            reduce using rule 30 (expression -> expression mathopt expression .)
+    RPAREN          reduce using rule 30 (expression -> expression mathopt expression .)
+    COMMA           reduce using rule 30 (expression -> expression mathopt expression .)
+    COLON           reduce using rule 30 (expression -> expression mathopt expression .)
+    R_AND           reduce using rule 30 (expression -> expression mathopt expression .)
+    R_NOT           reduce using rule 30 (expression -> expression mathopt expression .)
+    R_OR            reduce using rule 30 (expression -> expression mathopt expression .)
+    PLUS            shift and go to state 41
+    MINUS           shift and go to state 42
+    MULTIPLY        shift and go to state 43
+    DIVIDE          shift and go to state 44
+    MOD             shift and go to state 45
 
+  ! PLUS            [ reduce using rule 30 (expression -> expression mathopt expression .) ]
+  ! MINUS           [ reduce using rule 30 (expression -> expression mathopt expression .) ]
+  ! MULTIPLY        [ reduce using rule 30 (expression -> expression mathopt expression .) ]
+  ! DIVIDE          [ reduce using rule 30 (expression -> expression mathopt expression .) ]
+  ! MOD             [ reduce using rule 30 (expression -> expression mathopt expression .) ]
+
+    mathopt                        shift and go to state 40
 
 state 63
 
-    (31) expression -> num mathopt expression .
+    (31) expression -> LPAREN expression RPAREN .
 
-    NEWLINE         reduce using rule 31 (expression -> num mathopt expression .)
-    ID              reduce using rule 31 (expression -> num mathopt expression .)
-    R_DEF           reduce using rule 31 (expression -> num mathopt expression .)
-    R_RETURN        reduce using rule 31 (expression -> num mathopt expression .)
-    R_IF            reduce using rule 31 (expression -> num mathopt expression .)
-    R_WHILE         reduce using rule 31 (expression -> num mathopt expression .)
-    $end            reduce using rule 31 (expression -> num mathopt expression .)
-    RPAREN          reduce using rule 31 (expression -> num mathopt expression .)
-    PLUS            reduce using rule 31 (expression -> num mathopt expression .)
-    MINUS           reduce using rule 31 (expression -> num mathopt expression .)
-    MULTIPLY        reduce using rule 31 (expression -> num mathopt expression .)
-    DIVIDE          reduce using rule 31 (expression -> num mathopt expression .)
-    MOD             reduce using rule 31 (expression -> num mathopt expression .)
-    COMMA           reduce using rule 31 (expression -> num mathopt expression .)
-    COLON           reduce using rule 31 (expression -> num mathopt expression .)
-    R_AND           reduce using rule 31 (expression -> num mathopt expression .)
-    R_NOT           reduce using rule 31 (expression -> num mathopt expression .)
-    R_OR            reduce using rule 31 (expression -> num mathopt expression .)
+    PLUS            reduce using rule 31 (expression -> LPAREN expression RPAREN .)
+    MINUS           reduce using rule 31 (expression -> LPAREN expression RPAREN .)
+    MULTIPLY        reduce using rule 31 (expression -> LPAREN expression RPAREN .)
+    DIVIDE          reduce using rule 31 (expression -> LPAREN expression RPAREN .)
+    MOD             reduce using rule 31 (expression -> LPAREN expression RPAREN .)
+    NEWLINE         reduce using rule 31 (expression -> LPAREN expression RPAREN .)
+    ID              reduce using rule 31 (expression -> LPAREN expression RPAREN .)
+    R_DEF           reduce using rule 31 (expression -> LPAREN expression RPAREN .)
+    R_RETURN        reduce using rule 31 (expression -> LPAREN expression RPAREN .)
+    R_IF            reduce using rule 31 (expression -> LPAREN expression RPAREN .)
+    R_WHILE         reduce using rule 31 (expression -> LPAREN expression RPAREN .)
+    $end            reduce using rule 31 (expression -> LPAREN expression RPAREN .)
+    RPAREN          reduce using rule 31 (expression -> LPAREN expression RPAREN .)
+    COMMA           reduce using rule 31 (expression -> LPAREN expression RPAREN .)
+    COLON           reduce using rule 31 (expression -> LPAREN expression RPAREN .)
+    R_AND           reduce using rule 31 (expression -> LPAREN expression RPAREN .)
+    R_NOT           reduce using rule 31 (expression -> LPAREN expression RPAREN .)
+    R_OR            reduce using rule 31 (expression -> LPAREN expression RPAREN .)
 
 
 state 64
@@ -1495,11 +1525,16 @@ WARNING:
 WARNING: Conflicts:
 WARNING: 
 WARNING: shift/reduce conflict for ID in state 13 resolved as shift
-WARNING: shift/reduce conflict for PLUS in state 27 resolved as shift
-WARNING: shift/reduce conflict for MINUS in state 27 resolved as shift
-WARNING: shift/reduce conflict for MULTIPLY in state 27 resolved as shift
-WARNING: shift/reduce conflict for DIVIDE in state 27 resolved as shift
-WARNING: shift/reduce conflict for MOD in state 27 resolved as shift
+WARNING: shift/reduce conflict for PLUS in state 24 resolved as shift
+WARNING: shift/reduce conflict for MINUS in state 24 resolved as shift
+WARNING: shift/reduce conflict for MULTIPLY in state 24 resolved as shift
+WARNING: shift/reduce conflict for DIVIDE in state 24 resolved as shift
+WARNING: shift/reduce conflict for MOD in state 24 resolved as shift
+WARNING: shift/reduce conflict for PLUS in state 62 resolved as shift
+WARNING: shift/reduce conflict for MINUS in state 62 resolved as shift
+WARNING: shift/reduce conflict for MULTIPLY in state 62 resolved as shift
+WARNING: shift/reduce conflict for DIVIDE in state 62 resolved as shift
+WARNING: shift/reduce conflict for MOD in state 62 resolved as shift
 WARNING: shift/reduce conflict for R_AND in state 65 resolved as shift
 WARNING: shift/reduce conflict for R_NOT in state 65 resolved as shift
 WARNING: shift/reduce conflict for R_OR in state 65 resolved as shift

@@ -12,18 +12,14 @@ reserved_types = {
         'not'       :'R_NOT',
         'or'        :'R_OR',
 
-        'true'      :'BOOL',
-        'false'     :'BOOL',
-
         'return'    :'R_RETURN',
-
     }
 
 tokens = [
     # Identifiers
     'ID',
     # Primitive data types
-    'INTEGER', 'FLOAT', 'STRING',
+    'FLOAT',
     # Literals
      "LPAREN", "RPAREN", "COLON", "COMMA", "NEWLINE",
     # Operators
@@ -32,8 +28,6 @@ tokens = [
 
 # Token
 t_FLOAT        = r'[+-]?' + r'\d+.\d+'
-t_INTEGER      = r'[+-]?' + r'\d+'
-t_STRING       = r'".*"'
 t_LPAREN       = r'\('
 t_RPAREN       = r'\)'
 t_COLON        = r'\:'
@@ -90,23 +84,12 @@ def p_s00(t):
     '''
     res.append(t[1])
 
-def p_s01(t):
-    '''
-    assignment  : ID ASSIGN INTEGER
-    '''
-    t[0] = "int %s = %s; \n" % (t[1], t[3])
 
 def p_s02(t):
     '''
     assignment  : ID ASSIGN FLOAT
     '''
     t[0] = "float %s = %sf; \n" % (t[1], t[3])
-
-def p_s03(t):
-    '''
-    assignment  : ID ASSIGN STRING
-    '''
-    t[0] = "string %s = %s; \n" % (t[1], t[3])
 
 
 def p_error(t):
@@ -118,9 +101,7 @@ def p_error(t):
 parser = yacc.yacc()
 
 cd = """
-x = 5
 y = 17.3
-z = "holly shit"
 """
 
 parser.parse(cd)

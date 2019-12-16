@@ -1,3 +1,4 @@
+import numpy as np
 import ply.lex as lex
 import ply.yacc as yacc
 
@@ -49,6 +50,13 @@ t_NOTEQUAL     = r'!='
 # Ignored characters
 t_ignore = " \t"
 
+
+precedence = (
+    ('nonassoc', 'R_AND', 'R_NOT', 'R_OR'),
+    ('left', 'PLUS', 'MINUS'),
+    ('left', 'MULTIPLY', 'DIVIDE'),
+)
+
 def t_ID(t):
     r'[_a-zA-Z]+[_a-zA-Z0-9]*'
 
@@ -67,11 +75,6 @@ def t_error(t):
 
 # Build the lexer
 lexer = lex.lex()
-
-precedence = (
-    ('left', 'PLUS', 'MINUS'),
-    ('left', 'MULTIPLY', 'DIVIDE'),
-)
 
 
 def p_main(t):
@@ -167,7 +170,7 @@ def p_06(t):
     '''
     methodcall  : ID  LPAREN  callargs  RPAREN
     '''
-    t[0] = ('FUNCTION CALL', ('NAME', t[1]), ('ARGS', tuple(t[3])))
+    t[0] = ('FUNCTION CALL', ('NAME', t[1]), ('ARGS', t[3]))
 
 
 def p_07(t):
@@ -197,8 +200,8 @@ def p_08(t):
 
 def p_09(t):
     '''
-    expression  : LPAREN  expression  RPAREN
-                | num  mathopt  expression
+    expression  : expression  mathopt  expression
+                | LPAREN  expression  RPAREN
                 | num
     '''
     if len(t) == 4:
@@ -285,16 +288,17 @@ def p_error(t):
 parser = yacc.yacc()
 
 
-source_code = """
-def func(a, b, c, d):
-    (
-    if true:
-        ( x = 14 )
-    y = 500
-    )
-"""
 
-parser.parse(source_code)
+# source_code = """
+# def func(a, b, c, d):
+#     (
+#     if true:
+#         ( x = 14 )
+#     y = 500
+#     )
+# """
+#
+# parser.parse(source_code)
 
 while True:
     parser.parse(input(">>> "))

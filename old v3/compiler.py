@@ -167,22 +167,21 @@ parser = yacc.yacc()
 
 
 source_code = """
-x = 5
+dx = 5
 y = "string" + 17.3
 
 soso = "text"
 
 def p(t):
-    if x == y:
+    if x = y:
         return "Syntax error at the word"
 
     if t == false:
         print("Syntax error .. God only knows where or why!")
 
-    return
 """
 
-# parser.parse(source_code)
+parser.parse(source_code)
 
-while True:
-    parser.parse(input(">>> "))
+# while True:
+#     parser.parse(input(">>> "))

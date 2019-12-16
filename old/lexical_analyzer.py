@@ -54,7 +54,6 @@ class LaxicalAnalyzer:
 
             # first we check that the word is a keyword token
             if word in zp_keywords:
-                print("%s\t\t Type: %s" % )
                 continue
 
             # try to match the current word with every complied token we have
